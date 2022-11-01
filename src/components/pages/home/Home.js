@@ -25,9 +25,10 @@ function Home() {
 			<div className='topbg'>
 				<Header />
 				<div className='home-main-wrp'>
-					<div className='container-fluid'>
-						<div className='home-wrp'>
-							<div className='filter'>
+					<div className='container'>
+						<div className='home-wrp row'>
+								<div className="col-md-3 col-sm-12">
+								<div className='filter'>
 								<div className='filter-hding'>
 									<img src={filtericonl} />
 									<h1>FILTER</h1>
@@ -90,7 +91,8 @@ function Home() {
 									</li>
 								</ul>
 							</div>
-							<div className='filter-item'>
+								</div>
+							<div className='filter-item col-md-9 col-sm-12'>
 								<div className='itemmain-bx'>
 									<a href='#'>
 									<div className='itembx'>
@@ -425,10 +427,11 @@ function Home() {
 						</div>
 					</div>
 				</div>
-				<Footer />
+				
 			</div>
-
+			<Footer />
 		</div>
+		
 	);
 }
 

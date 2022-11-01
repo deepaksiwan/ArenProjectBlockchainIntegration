@@ -266,22 +266,24 @@ p {
   margin: 0px;
   padding: 0px;
   list-style: none;
-  display: flex;
+  display: flex !important;
   background-image: url(../images/hdr-bgleft.png);
   background-repeat: no-repeat;
   background-size: 100% 100%;
   padding: 20px 60px;
+  gap: 13px;
 
 }
 .nav-listbg-r{
   margin: 0px;
   padding: 0px;
   list-style: none;
-  display: flex;
+  display: flex !important;
   background-image: url(../images/hdr-bgright.png);
   background-repeat: no-repeat;
   background-size: 100% 100%;
   padding: 20px 60px;
+  gap: 13px;
 }
 
 .nav-list>li {
@@ -593,14 +595,20 @@ body.smr-open .slide-menu-right {
 .topbg{
   background-image: url(../images/bodybg.jpg);
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    /* background-attachment: fixed; */
+    -webkit-font-smoothing: antialiased;
 }
 .home-wrp{
-  display: flex;
-  justify-content: space-between;
+  /* display: flex;
+  justify-content: space-between; */
+  margin-bottom: 3rem;
 }
 .home-main-wrp{
-  padding: 55px 100px;
+  /* padding: 55px 100px; */
+  padding: 4rem 0 0 0;
 }
 .filter-hding{
   display: flex;
@@ -608,7 +616,7 @@ body.smr-open .slide-menu-right {
 .filter-hding > h1{
   display: inline-block;
   font-size: 20px;
-  margin: 0px 15px;
+  margin: 0px 8px;
   font-weight: 600;
 }
 #dropdown-tab{
@@ -635,11 +643,19 @@ body.smr-open .slide-menu-right {
   font-size: 20px;
 }
 .filter{
-  width: 22%;
+  /* width: 22%; */
   background-image: url(../images/filterbgl.svg);
   background-repeat: no-repeat;
-  padding: 30px 25px;
+  padding: 30px 18px;
   background-size: 100%;
+  height: auto !important;
+
+    /* background-image: url(/static/media/bg@3x.5cf03bd….webp);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased; */
 }
 .p-range{
   display: flex;
@@ -659,7 +675,7 @@ body.smr-open .slide-menu-right {
   color: #fff;
 }
 .apply > a{
-  margin-top: 125px;
+  /* margin-top: 125px; */
   display: block;
   background-color: #31E0B4;
   text-align: center;
@@ -678,7 +694,7 @@ body.smr-open .slide-menu-right {
   border: 2px solid #31E0B4;
     border-radius: 4px;
     position: relative;
-    width: 235px;
+    /* width: 235px; */
     transition: 0.5s;
 }
 .itembx:hover{
@@ -690,17 +706,18 @@ body.smr-open .slide-menu-right {
   position: absolute;
   top: 0px;
   left: 5px;
+
 }
- .filter-item{
+ /* .filter-item{
   width: 75%;
- }
+ } */
  .itembox-hding > img{
   width: 36px;
   opacity: 36%;
   margin-top: 6px;
  }
  .star > img{
-  margin: 0px 15px;
+  /* margin: 0px 15px; */
   width: 100px;
  }
   
@@ -749,7 +766,8 @@ body.smr-open .slide-menu-right {
 
 /* itempage open here */
 .item-main-wrp{
-  padding: 50px 100px;
+  /* padding: 50px 100px; */
+  padding: 3rem 0;
 }
 .item-hding{
   display: flex;
@@ -801,6 +819,7 @@ body.smr-open .slide-menu-right {
 .character-box{
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 .character-b-cont > p{
   color: #B7BBC8;
@@ -904,6 +923,23 @@ body.smr-open .slide-menu-right {
   color: #fff;
   font-style: italic;
 }
+.block__title1 {
+  position: relative;
+  /* cursor: pointer; */
+  font-size: 15px;
+  /* color: #fff; */
+  color: rgba(255, 255, 255, 0.7);
+  /* font-style: italic; */
+  /* opacity: 0.7; */
+  margin-top: 1rem;
+}
+.block__title1> span {
+  position: relative;
+  cursor: pointer;
+  font-size: 15px;
+  color: #11D6FF;
+  /* font-style: italic; */
+}
 .block__title.active:before {
   -webkit-transform: rotate(-40deg);
   transform: rotate(-40deg);
@@ -950,7 +986,10 @@ body.smr-open .slide-menu-right {
   text-align: center;
   padding: 20px;
   border-radius: 4px;
+  margin: 10px;
 }
+.stats h3{color: #fff;}
+.stats p{color: #11D6FF;}
 /* itempage closed here */
 
 /* footer open here */
@@ -958,7 +997,7 @@ body.smr-open .slide-menu-right {
   background-image: url(../images/footerbg.png);
   background-repeat: no-repeat;
   background-size: 100%;
-  padding: 40px 100px;
+  padding: 28px 100px;
 }
 .ftr-hding > h1{
   text-align: center;

@@ -23,7 +23,7 @@ function Item() {
             <div className='topbg'>
                 <Header />
                 <div className='item-main-wrp'>
-                    <div className='container-fluid'>
+                    <div className='container'>
                         <div className='item-wrp'>
                             <div className='item-hding'>
                                 <img src={hdingarrowleft} />

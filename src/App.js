@@ -1,28 +1,25 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
+import "./App.css";
 
-import Home from './components/pages/home/Home'
-import Item from './components/pages/item/Item'
- 
-
-
-
-
-
+import Home from "./components/pages/home/Home";
+import Item from "./components/pages/item/Item";
+import Item2 from "./components/pages/item/item2";
 
 function App() {
-
-
-	return (
-		<Router>
-			<div>
-				<Route exact path="/" name="Home Page" component={Home} />
-				<Route exact path="/item" name="Item Page" component={Item} />
-			</div>
-		</Router>
-	);
-
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" name="Home Page" element={<Home />} />
+          <Route exact path="/item" name="Item Page" element={<Item />} />
+          <Route exact path="/item2" name="Item Page 2" element={<Item2/>} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
 
 export default App;
