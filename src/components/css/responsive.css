@@ -1,0 +1,201 @@
+@media(max-width: 1500px) {
+    
+    .header-c2 {
+        width: 80%;
+    }
+
+    .bule-circle {
+        width: 220px;
+        height: 220px;
+    }
+
+    .coolect-box {
+        width: 22%;
+    }
+
+    .collect-c {
+        margin-top: 130px;
+    }
+
+    .coolect-box {
+        height: 210px;
+    }
+}
+
+@media(max-width: 1440px) {
+    #hometab-sec {
+        padding: 40px 140px;
+        height: auto;
+    }
+    #homebnrbg{
+        padding: 40px 140px;
+        height: 100vh;
+    }
+#pool2 {
+        padding: 80px 140px 40px 140px;
+        height: auto;
+    }
+    #farmwithsecond{
+        padding: 110px 120px;
+        height: auto; 
+    }
+    #bnrbg {
+        padding: 110px 120px;
+        height: auto;
+    }
+    #delete-sec {
+        padding: 110px 120px;
+        height: auto;
+    }
+    #farmbg{
+        padding: 40px 140px;
+        height: auto;
+    }
+    .header-c2 {
+        width: 100%;
+    }
+
+    .menu-butn {
+        color: #ffffff;
+    }
+
+    .menu-butn-c {
+        color: #2f5e90 !important;
+    }
+
+    .nav-list>li>a {
+        color: #fff;
+    }
+
+    .nav-list {
+        margin-right: 0px;
+        display: inherit;
+    }
+
+    .searchipt-wrp {
+        margin: 9px 180px 0px 180px;
+        justify-content: space-between;
+    }
+
+    .nav-list>li {
+        margin-left: 0px;
+        align-self: center;
+        margin-top: 20px;
+    }
+
+    #bnr-bg {
+        padding: 90px 120px;
+    }
+
+    .multi-chain-bx {
+        padding: 30px;
+    }
+
+    .eth-c-bx {
+        padding: 20px;
+    }
+
+    .menu-list-d>li {
+        margin-left: 15px;
+    }
+
+    .yp-bx {
+        padding: 20px 30px;
+    }
+
+    .sc-wrp>p {
+        font-size: 14px;
+    }
+
+    .m-ecosys-bx {
+        padding: 10px;
+    }
+
+    .bnr2-cont>h1 {
+        font-size: 60px;
+    }
+
+    .mpad-bx {
+        padding: 25px 25px 25px 0px;
+    }
+
+    .mpad-bx-cont {
+        padding-left: 25px;
+    }
+
+}
+
+@media(max-width: 1166px) {
+    
+     
+    .logo-box>a>img {
+        width: 70px;
+    }
+
+    .border-b {
+        padding: 10px 20px;
+        height: auto;
+    }
+
+    .header-c2 {
+        width: 100%;
+    }
+
+    #play-to-earn {
+        background-position: center;
+    }
+
+    .toggle-slide-right {
+        display: block;
+    }
+
+    .burger-area {
+        display: block;
+        align-self: center;
+    }
+
+    .menu-list-d {
+        display: none;
+    }
+
+    .itemmain-bx {
+        flex-wrap: wrap;
+    }     
+    .home-main-wrp {
+        padding: 50px 20px;
+        background-image: url(../images/bodybgresp.jpg);
+    }
+    .filter {
+        width: 32%;
+    }
+    .filter-item {
+        width: 64%;
+    }
+    #dropdown-tab::after {
+        margin-left: 200px;
+    }
+    .itembx {
+        width: 295px;
+    }
+    .fotterbg {
+        background-size: 100% 100%;
+    }
+    .itembx-mr{
+        margin-top: 20px;
+    }
+    .item-mr {
+        margin-top: 20px;
+    }
+    .apply > a {
+        margin-top: 170px;
+    }
+}
+
+@media(max-width: 992px) {
+     
+
+}
+
+@media(max-width: 580px) {
+     
+}
