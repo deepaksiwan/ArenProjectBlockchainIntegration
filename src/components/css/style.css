@@ -612,6 +612,7 @@ body.smr-open .slide-menu-right {
 }
 .filter-hding{
   display: flex;
+  justify-content: center;
 }
 .filter-hding > h1{
   display: inline-block;
@@ -628,10 +629,49 @@ body.smr-open .slide-menu-right {
   border-top: 0.3em solid #54718a;
 }
 .filter-list{
-  margin: 0px;
+  margin: 0px 10px;
   padding: 0px;
   list-style: none;
 }
+.filter-list .css-1869usk-MuiFormControl-root{
+  width: 100%;
+  margin: 0;
+}
+.filter-list .css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root{
+ color: #54718a;
+ font-size: 15px;
+ font-style: normal;
+ font-weight: 600;
+}
+.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root:hover{
+  border-color: red !important;
+}
+.filter-list .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
+ padding: 10px;
+}
+.filter-list .css-1d3z3hw-MuiOutlinedInput-notchedOutline{
+ border: 1px solid #54718a;
+}
+
+.css-hfutr2-MuiSvgIcon-root-MuiSelect-icon{
+  fill: #54718a !important;
+}
+.css-bpeome-MuiSvgIcon-root-MuiSelect-icon{
+  fill: #54718a !important;
+}
+.filter-list :focus-visible {
+  outline: 0 !important;
+}
+.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root{
+  font-size: 14px;
+  color: #54718a;
+  font-weight: 500;
+}
+.css-6hp17o-MuiList-root-MuiMenu-list{
+  background-color: #1A2548;
+}
+
+
 .filter-list > li {
   margin-top: 30px;
 }
@@ -646,9 +686,11 @@ body.smr-open .slide-menu-right {
   /* width: 22%; */
   background-image: url(../images/filterbgl.svg);
   background-repeat: no-repeat;
-  padding: 30px 18px;
-  background-size: 100%;
+  padding: 30px;
+  
+  background-size: 100% 100%;
   height: auto !important;
+
 
     /* background-image: url(/static/media/bg@3x.5cf03bd….webp);
     background-size: cover;
@@ -696,6 +738,7 @@ body.smr-open .slide-menu-right {
     position: relative;
     /* width: 235px; */
     transition: 0.5s;
+    cursor: pointer;
 }
 .itembx:hover{
   transform: translateY(-8px);

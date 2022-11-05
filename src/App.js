@@ -15,7 +15,8 @@ function App() {
         <Routes>
           <Route exact path="/" name="Home Page" element={<Home />} />
           <Route exact path="/item" name="Item Page" element={<Item />} />
-          <Route exact path="/item2" name="Item Page 2" element={<Item2/>} />
+          {/* <Route exact path="/item2" name="Item Page 2" element={<Item2/>} /> */}
+          <Route exact path="/item2/:id" name="Item2 Page 2" element={<Item2/>} />
         </Routes>
       </BrowserRouter>
     </>

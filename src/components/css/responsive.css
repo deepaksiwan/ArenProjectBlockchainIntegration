@@ -170,7 +170,7 @@
     }
     .filter {
         width: 100%;
-        background-size: contain !important;
+        background-size: cover;
     }
     .socialicon > li{
         margin: 0  !important;
@@ -182,12 +182,12 @@
         margin-left: 200px;
     }
     .itembx {
-        width: 252px;
+        width: auto;
         margin: 10px;
     }
     .itembox-hding{
         display: flex;
-        gap: 21px;
+        gap:2px;
     }
     .fotterbg {
         background-size: 100% 100%;
@@ -212,12 +212,12 @@
 }
 
 @media(max-width: 580px) {
-    .topbg {
-        /* background-image: url(http://localhost:3000/static/media/bodybg.fe1729f….jpg);
+    /* .topbg {
+        background-image: url(http://localhost:3000/static/media/bodybg.fe1729f….jpg);
         background-repeat: no-repeat;
         background-position: bottom;
-        -webkit-font-smoothing: antialiased; */
-    }
+        -webkit-font-smoothing: antialiased;
+    } */
     .ftr-hding > h1 {
         font-size: 13px !important;
     }
@@ -230,4 +230,9 @@
     .filter-list > li {
         margin-top: 53px !important;
     }
+    .itembox-hding {
+        left: 35px;
+        gap: 25px;
+    }
+    
 }

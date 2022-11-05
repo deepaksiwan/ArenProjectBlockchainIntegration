@@ -10,13 +10,24 @@ import orderr from "../../images/orderr.svg";
 import skillimg from "../../images/skillimg.svg";
 import Accordian from "../item/Accordian";
 import img1 from "../../images/img1.png";
+import {useParams} from 'react-router-dom'
+import ItemsData from "../home/ItemsData.js";
 
-function Item() {
+function Item2() {
+  const { id } = useParams();
+  console.log("ghh",id)
+  const details = ItemsData.filter((details) => details.id == id);
+  console.log("ghj",details)
   return (
     <div>
       <div className="topbg">
         <Header />
-        <div className="item-main-wrp">
+        
+        {
+          details.map((e,id)=>{
+            const {name} =e
+            return(
+              <div className="item-main-wrp" key={id}>
           <div className="container">
             <div className="item-wrp">
               <div className="item-hding">
@@ -29,7 +40,7 @@ function Item() {
                   <div className="col-lg-4">
                     <div className="item-left-cont">
                       <div className="item-img">
-                        <img src={img1} />
+                        <img src={e.image} />
                       </div>
                       <ul className="item-left-list">
                         <li>
@@ -162,10 +173,14 @@ function Item() {
             </div>
           </div>
         </div>
+            )
+          })
+        }
+        
         <Footer />
       </div>
     </div>
   );
 }
 
-export default Item;
+export default Item2;
