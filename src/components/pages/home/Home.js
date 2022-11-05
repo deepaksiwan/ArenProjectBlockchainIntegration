@@ -47,7 +47,7 @@ function Home() {
         <div className="home-main-wrp">
           <div className="container">
             <div className="home-wrp row">
-              <div className="col-md-3 col-sm-12 p-0">
+              <div className="col-md-3 col-sm-12 ">
                 <div className="filter">
                   <div className="filter-hding">
                     <img src={filtericonl} />

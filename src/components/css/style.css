@@ -629,7 +629,7 @@ body.smr-open .slide-menu-right {
   border-top: 0.3em solid #54718a;
 }
 .filter-list{
-  margin: 0px 10px;
+  margin: 0px 11px;
   padding: 0px;
   list-style: none;
 }
@@ -643,8 +643,8 @@ body.smr-open .slide-menu-right {
  font-style: normal;
  font-weight: 600;
 }
-.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root:hover{
-  border-color: red !important;
+.filter-list .css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #54718a;
 }
 .filter-list .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input{
  padding: 10px;
