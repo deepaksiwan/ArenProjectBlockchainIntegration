@@ -20,6 +20,7 @@
     "buffer": "^6.0.3",
     "chart.js": "^3.9.1",
     "ethers": "^5.7.2",
+    "formik": "^2.2.9",
     "install": "^0.13.0",
     "ipfs-http-client": "^56.0.2",
     "jquery": "^3.6.1",
@@ -58,7 +59,8 @@
     "typescript": "^4.4.4",
     "util": "^0.12.5",
     "wagmi": "^0.7.9",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",

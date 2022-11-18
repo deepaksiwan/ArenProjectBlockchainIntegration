@@ -62,12 +62,12 @@ function Mynft() {
     abi: NFT_ABI,
     signerOrProvider: provider,
 
-
+balance
   })
 
   const Balance = async () => {
     const balanceOf = await contract.balanceOf(address)
-    console.log("balance", parseFloat(balanceOf),address)
+    console.log("", parseFloat(balanceOf),address)
     return balanceOf
 
   }

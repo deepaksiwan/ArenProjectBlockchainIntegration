@@ -47,11 +47,18 @@ function Marketplace() {
   const _getAllNFTs = useContractRead({
     address: OPEN_MARKETPLACE_ADDRES,
     abi: OPENMARKETPLACE_ABI,
-    functionName: 'getAllNFTs',
-  
-    
+    functionName: 'getAllNFTs' ,
+    chainId:97,
+    onSuccess:(data)=>{
+      console.log(data);
+    }
   })
-  console.log("getallnftmargetplace", _getAllNFTs)
+  // console.log("getallnftmargetplace", _getAllNFTs)
+  useEffect(()=>{
+   if( address && _getAllNFTs?.data){
+    console.log(_getAllNFTs?.data);
+   }
+  },[])
 
   return (
     <div>
