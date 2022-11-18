@@ -9,15 +9,21 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Marketplaceitem from "./Marketplaceitem.js"
-import { useAccount, useContractRead } from 'wagmi'
-import { OPEN_MARKETPLACE_ADDRES } from "../../../Config";
+import { useAccount, useContract, useContractRead,useProvider } from 'wagmi'
+import { OPEN_MARKETPLACE_ADDRESS ,NFT_ADDRESS} from "../../../Config";
 import OPENMARKETPLACE_ABI from "../../../Config/OPENMARKETPLACE_ABI.json";
+import NFT_ABI from "../../../Config/NFT_ABI.json";
+import item1 from '../../images/item1.svg'
+import { getUserNFTByTokenURI } from "../../../api/ApiCall/GetUseNFTById";
+import { log } from "util";
+import { ethers } from "ethers";
 
 
 const allCategory = [... new Set(ItemsData.map((e)=> e.category))]
 // console.log(allCategory)
 
 function Marketplace() {
+  const provider=useProvider()
   const { address, isConnected } = useAccount();
   const [age1, setAge1] = useState("");
   const handleChange1 = (event) => {
@@ -34,7 +40,7 @@ function Marketplace() {
 
 
 // filter
-  const [data, setData] =useState(ItemsData)
+  const [data, setData] =useState(ItemsData);
   const filterItem=(categoryItem) => {
     const updatedItem = ItemsData.filter((e)=>{
       return e.category === categoryItem
@@ -43,23 +49,65 @@ function Marketplace() {
     setData(updatedItem)
   }
 
+  const [allNftData,setAllNftData]=useState([])
+  const [allNftDataFetched, setAllNftDataFetched] = useState(false);
 //getAllNFTs marketplace read
-  const _getAllNFTs = useContractRead({
-    address: OPEN_MARKETPLACE_ADDRES,
-    abi: OPENMARKETPLACE_ABI,
-    functionName: 'getAllNFTs' ,
-    chainId:97,
-    onSuccess:(data)=>{
-      console.log(data);
-    }
-  })
-  // console.log("getallnftmargetplace", _getAllNFTs)
-  useEffect(()=>{
-   if( address && _getAllNFTs?.data){
-    console.log(_getAllNFTs?.data);
-   }
-  },[])
+  // const _getAllNFTs = useContractRead({
+  //   address: OPEN_MARKETPLACE_ADDRES,
+  //   abi: OPENMARKETPLACE_ABI,
+  //   functionName: 'getAllNFTs'
+  // })
 
+const getAllNFTContract=useContract({
+    address: OPEN_MARKETPLACE_ADDRESS,
+    abi: OPENMARKETPLACE_ABI,
+    signerOrProvider:provider
+})
+
+const ERC721Contract=useContract({
+  address: NFT_ADDRESS,
+  abi: NFT_ABI,
+  signerOrProvider:provider
+})
+
+const getAllNFTs=async()=>{
+  const transaction = await getAllNFTContract.getAllNFTs();
+  // console.log({transaction});
+  const items=await Promise.all(transaction.map(async(item)=>{
+  // console.log({item});
+    const tokenURI = await ERC721Contract.tokenURI(item.tokenId);
+    // console.log({tokenURI});
+    const meta = await getUserNFTByTokenURI(tokenURI);
+    // console.log(item.listingId,"meta");
+    let price = ethers.utils.formatUnits(item?.priceInWei.toString(), 'ether');
+    let itemList={
+      listingId:item?.listingId.toString(),
+      nftAddress:item?.nftAddress,
+      tokenId:item?.tokenId.toString(),
+      price:price,
+      seller:item?.seller,
+      acceptedToken:item?.acceptedToken,
+      name:meta.name,
+      edition:meta.edition,
+      image:item1
+    }
+    return itemList;
+  }))
+  setAllNftDataFetched(true)
+  setAllNftData(items)
+
+}
+
+useEffect(()=>{
+  if(!allNftDataFetched){
+    getAllNFTs?.();
+  }
+})
+
+// console.log(allNftData);
+
+
+ 
   return (
     <div>
       <div className="topbg">
@@ -139,7 +187,7 @@ function Marketplace() {
                       </FormControl>
                     </li>
                     <li>
-                      <h3>PRICe RANGE</h3>
+                      <h3>PRICE RANGE</h3>
                       <div className="p-range">
                         <input type="text" placeholder="Min" />
                         <input type="text" placeholder="Max" />
@@ -155,7 +203,8 @@ function Marketplace() {
               </div>
               <div className="filter-item col-md-9 col-sm-12">
                 <div className="row">
-                  {data.map((e,index) => {
+                  {allNftData.map((e,index) => {
+                    console.log("e",e)
                     return (
                       <div className="col-lg-4 pb-4 col-md-6">
                         <Marketplaceitem ItemsData={e} key={index} />

@@ -44,7 +44,7 @@ const items = (props) => {
       // {()=> item(props.ItemsData.id)
       // }
       >
-        <Link to={`/Nftdetails/${props.ItemsData.id}`}>
+        <Link to={`/Nftdetails/${props.ItemsData.tokenId}`}>
           <div className="itemimg">
             <img src={props.ItemsData.image} />
           </div>

@@ -104,7 +104,6 @@ const Listednft = ({ tokenindex }) => {
     if (address) {
       MetaData?.()
       setApproved(IsApprovalForAll?.data)
-      //readSymbol(PaymentOption?.data)
       // checkApprove()
     }
   }, [tokenindex])
@@ -139,7 +138,6 @@ const Listednft = ({ tokenindex }) => {
       const arraySymbol=[]
       setTokenSymbol(symbol?.data)
       for(let i=0;i<symbol?.data?.length;i++){
-        // setSymbolAddress([{symbol:symbol?.data?.[i],address:Option?.[i]}])
         arraySymbol.push({symbol:symbol?.data?.[i],address:Option?.[i]})
       }
       setSymbolAddress(arraySymbol);
@@ -170,23 +168,21 @@ const Listednft = ({ tokenindex }) => {
 
   const handlesaprove = (event) => {
     let _price = event.target.value;
+    _price=ethers.utils.parseEther(_price.toString())
     setprice(_price);
 
 
   };
+
   //set payment
-  const onChangeHandler = (e) => {
-    const payment = e.target.value;
-    setPayment(payment)
+  const onChangeHandler = (e,val) => {
+    setPayment(val.props.value)
   }
 
   const Aproved = async () => {
     if (address && isConnected) {
       await writeAsync()
       checkApprove();
-
-      handlesaprove();
-      onChangeHandler();
     }
 
   }
@@ -194,45 +190,21 @@ const Listednft = ({ tokenindex }) => {
 
   //Write function call  listing
   // OpenMarketplaceWriteContract
+  console.log(price);
   const {config:listNftConfig} = usePrepareContractWrite({
     address: OPEN_MARKETPLACE_ADDRESS,
     abi: OPENMARKETPLACE_ABI,
     functionName:"listNft",
-    args:[NFT_ADDRESS,20,2000,"0x596ef770d6bc5944f099ec5200f43f079241b2b0"],
+    args:[NFT_ADDRESS,getMetadata?.edition,Payment??"0x596ef770d6bc5944f099ec5200f43f079241b2b0",price],
     chainId:97
 
   })
 
-  const listNft=async()=>{
-    const provider= new ethers.providers.Web3Provider(ethereum);
-    const signer=provider.getSigner();
-    const contract=new ethers.Contract(OPEN_MARKETPLACE_ADDRESS,OPENMARKETPLACE_ABI,signer);
-    const listNft= contract.listNft("0x77B097cF279Da525Be6aD77a581fc342dd4f78d6",20,2000,"0x596ef770d6bc5944f099ec5200f43f079241b2b0")
-    await listNft.wait
-    console.log(listNft?.hash);
 
-    
-  }
 
-  const {write:writeAsyncListNft}=useContractWrite(listNftConfig)
+  const {writeAsync:writeAsyncListNft,data:ListNftData}=useContractWrite(listNftConfig)
 
-  // const formik = useFormik({
-  //   initialValues: {
-  //     price: 1,
-  //     addressFromSymbol: ""
-  //   },
-  //   validationSchema: Yup.object({
-  //     price: Yup.number().required(),
-  //     addressFromSymbol: Yup.string().required("Required!")
-  //   }),
-  //   onSubmit: async (values) => {
-  //     try {
-  //       await writeAsyncListNft()
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  // });
+
 
 
   return (
@@ -317,7 +289,7 @@ const Listednft = ({ tokenindex }) => {
                     >
                       {symbolAddress && symbolAddress?.map(({symbol,address},index) => {
                         return (
-                          <MenuItem key={index} value={address && address}>{symbol}</MenuItem>
+                          <MenuItem key={index} value={address}>{symbol}</MenuItem>
                         )
                       })}
 
@@ -343,21 +315,18 @@ const Listednft = ({ tokenindex }) => {
           </Container> */}
           <Container>
             <Stack spacing={2} direction="row" sx={{ pt: '15px' }} justifyContent={"space-between"}>
-              {approved ?
+              {!approved ?
                 (<Button onClick={Aproved} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Approve</Button>)
                 :
-                (<Button variant="contained" sx={{ fontSize: "18px", width: "150px" }}>List</Button>)
+                (<Button onClick={writeAsyncListNft} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>List</Button>)
     
 
               }
               <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>cancel</Button>
             </Stack>
           </Container>
-          <Button onClick={listNft} > listing</Button>
         </Box>
       </Modal>
-
-
 
 
     </>
