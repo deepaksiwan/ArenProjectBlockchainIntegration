@@ -3,19 +3,22 @@ import Header from "../header.js";
 import Footer from "../Footer";
 import filtericonl from "../../images/filtericonl.svg";
 import filtericonr from "../../images/filtericonr.svg";
-import Dropdown from "react-bootstrap/Dropdown";
 import ItemsData from "./ItemsData.js";
-import Items from "./Items.js";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
+
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import Marketplaceitem from "./Marketplaceitem.js"
+import { useAccount, useContractRead } from 'wagmi'
+import { OPEN_MARKETPLACE_ADDRES } from "../../../Config";
+import OPENMARKETPLACE_ABI from "../../../Config/OPENMARKETPLACE_ABI.json";
+
 
 const allCategory = [... new Set(ItemsData.map((e)=> e.category))]
-console.log(allCategory)
+// console.log(allCategory)
 
-function Home() {
+function Marketplace() {
+  const { address, isConnected } = useAccount();
   const [age1, setAge1] = useState("");
   const handleChange1 = (event) => {
     setAge1(event.target.value);
@@ -30,7 +33,7 @@ function Home() {
   };
 
 
-//  filter//
+// filter
   const [data, setData] =useState(ItemsData)
   const filterItem=(categoryItem) => {
     const updatedItem = ItemsData.filter((e)=>{
@@ -38,8 +41,18 @@ function Home() {
     })
 
     setData(updatedItem)
-    console.log("s",updatedItem)
   }
+
+//getAllNFTs marketplace read
+  const _getAllNFTs = useContractRead({
+    address: OPEN_MARKETPLACE_ADDRES,
+    abi: OPENMARKETPLACE_ABI,
+    functionName: 'getAllNFTs',
+  
+    
+  })
+  console.log("getallnftmargetplace", _getAllNFTs)
+
   return (
     <div>
       <div className="topbg">
@@ -137,8 +150,8 @@ function Home() {
                 <div className="row">
                   {data.map((e,index) => {
                     return (
-                      <div className="col-lg-3 pb-4 col-md-6">
-                        <Items ItemsData={e} key={index} />
+                      <div className="col-lg-4 pb-4 col-md-6">
+                        <Marketplaceitem ItemsData={e} key={index} />
                       </div>
                     );
                   })}
@@ -153,4 +166,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Marketplace;

@@ -10,8 +10,16 @@ import "../css/responsive.css";
 import logo from "../images/logo.png";
 import burger from "../images/burger.png";
 import crosss from "../images/crosss.png";
+import { useNavigate } from "react-router-dom";
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useAccount, useContractRead, useProvider, useContract, usePrepareContractWrite, useContractWrite } from 'wagmi'
 
 const Header = () => {
+  const navigate = useNavigate();
+  const { openConnectModal } = useConnectModal();
+  const { address, isConnected } = useAccount();
+  
+
   useEffect(() => {
     changePickupStoreMenu();
 
@@ -39,6 +47,12 @@ const Header = () => {
     }
   }, []);
 
+
+  const Mynfthandler = ()=>{
+    navigate("/Mynft")
+
+  }
+
   return (
     <div className="border-b">
       <div className="container-fluid">
@@ -51,13 +65,13 @@ const Header = () => {
                     <Link to="/">Story</Link>
                   </li>
                   <li>
-                    <Link to="#about">Overview</Link>
+                    <Link to="#about">List Nft</Link>
                   </li>
                   <li>
-                    <Link to="#overview">NFT</Link>
+                    <Link to="/Mynft">My Nft</Link>
                   </li>
                   <li>
-                    <Link to="#community">Marketplace</Link>
+                    <Link to="/">Marketplace</Link>
                   </li>
                 </ul>
               </li>
@@ -84,7 +98,9 @@ const Header = () => {
                     <Link to="#casino">Team</Link>
                   </li>
                   <li>
-                    <Link to="#docs">Play Now</Link>
+                    <Link  onClick={openConnectModal}>{address && isConnected ? <p>{address.substring(0, 6) +
+            "...." +
+            address.substring(address.length - 6)}</p> : <p>Connect</p>}</Link>
                   </li>
                 </ul>
               </li>
