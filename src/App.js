@@ -8,7 +8,7 @@ import Marketplace from "./components/pages/home/Marketplace";
 import Item from "./components/pages/item/Item";
 import Nftdetails from "./components/pages/item/Nftdetails";
 import Mynft from "./components/pages/home/mynft"
-import Listitems from "./components/pages/item/Nftdetails"
+import Listitems from "./components/pages/item/ListedDetails"
 
 function App() {
   return (

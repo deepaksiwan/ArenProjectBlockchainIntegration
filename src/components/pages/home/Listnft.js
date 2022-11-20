@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, TextField, Modal, Grid, MenuItem, Container, Stack, Button, Avatar } from '@mui/material';
 import styled from "@emotion/styled";
 import Typography from '@mui/material/Typography';
@@ -37,6 +37,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { IndexKind } from "typescript";
 import { ethers } from "ethers";
+import { OpenMarketplaceContext } from "../../../context/OpenMarketplaceContext";
 
 const style = {
   position: 'absolute',
@@ -55,10 +56,11 @@ const style = {
 
 const Listednft = ({ tokenindex }) => {
   const { data: signer } = useSigner()
+  const {symbolAddress}=useContext(OpenMarketplaceContext)
   const provider = useProvider();
   const { address, isConnected } = useAccount();
   const [price, setprice] = useState("");
-  console.log("price", price)
+  // console.log("price", price)
   const [SelectValue, setSelectValue] = useState(0)
   const [Payment, setPayment] = React.useState('');
   const [open, setOpen] = React.useState(false);
@@ -66,9 +68,9 @@ const Listednft = ({ tokenindex }) => {
   const [open1, setOpen1] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [Option, setOptionArray] = useState();
-  const [tokenSymbol,setTokenSymbol]=useState();
-  const [symbolAddress,setSymbolAddress]=useState();
+  const [priceInWei,setPriceInWei]=useState();
+  const [tokenId,setTokenId]=useState();
+
 
 
 
@@ -84,7 +86,9 @@ const Listednft = ({ tokenindex }) => {
   })
 
   const MetaData = async () => {
-    const tokenid = await contract.tokenOfOwnerByIndex(address, tokenindex)
+    const tokenid = await contract.tokenOfOwnerByIndex(address, tokenindex);
+    // console.log(tokenid);
+    setTokenId(tokenid.toString());
     // console.log("tokenid", parseFloat(tokenid))
     const tokenUri = await contract.tokenURI(tokenid);
     const metaData = await getUserNFTByTokenURI(tokenUri)
@@ -92,85 +96,56 @@ const Listednft = ({ tokenindex }) => {
     setMetadata(metaData)
   }
 
-  //IsApproval for all read function
-  const IsApprovalForAll = useContractRead({
-      address: NFT_ADDRESS,
-      abi: NFT_ABI,
-      functionName: 'isApprovedForAll',
-      args: [address, OPEN_MARKETPLACE_ADDRESS]
-  })
-
   useEffect(() => {
-    if (address) {
+    if ( isConnected && address) {
       MetaData?.()
-      setApproved(IsApprovalForAll?.data)
-      // checkApprove()
     }
-  }, [tokenindex])
+  },[tokenindex,isConnected,address])
 
 
 
-  const PaymentOptionContract = useContractRead({
-    address: OPEN_MARKETPLACE_ADDRESS,
-    abi: OPENMARKETPLACE_ABI,
-    functionName: 'getERCTokenList',
-  })
 
-  useEffect(()=>{
-    if(PaymentOptionContract?.data){
-      setOptionArray([...PaymentOptionContract?.data])
-    }
-  },[])
 
-  const symbol = useContractReads({
-    contracts: Option?.map((singleAddress)=>{
-    return{
-        address: singleAddress,
-        abi: erc20ABI,
-        functionName: 'symbol',
-    }
+   //IsApproval for all read function
+   const IsApprovalForAll = useContractRead({
+    address: NFT_ADDRESS,
+    abi: NFT_ABI,
+    functionName: 'isApprovedForAll',
+    args: [address, OPEN_MARKETPLACE_ADDRESS]
+})
+
+useEffect(()=>{
+  if(address && isConnected && IsApprovalForAll?.data){
+    setApproved(IsApprovalForAll?.data)
   }
-  ),
-}
-)
-  useEffect(()=>{
-    if(symbol?.data?.length>0){
-      const arraySymbol=[]
-      setTokenSymbol(symbol?.data)
-      for(let i=0;i<symbol?.data?.length;i++){
-        arraySymbol.push({symbol:symbol?.data?.[i],address:Option?.[i]})
-      }
-      setSymbolAddress(arraySymbol);
-    }
+},[IsApprovalForAll?.data,approved,address])
 
-  },[symbol?.data,Option])
 
 
   //Write function call  setApprovalForAll
-  const { config } = usePrepareContractWrite({
+  const { config:configSetApprovalForAll } = usePrepareContractWrite({
     address: NFT_ADDRESS,
     abi: NFT_ABI,
     functionName: 'setApprovalForAll',
-    args: [OPEN_MARKETPLACE_ADDRESS, false]
+    args: [OPEN_MARKETPLACE_ADDRESS, true]
   })
-  const { writeAsync, isSuccess, data } = useContractWrite(config)
-  // console.log("data", data)
+  const { writeAsync:writeAsyncSetApprovalForAll, data :setApprovalForAllData} = useContractWrite(configSetApprovalForAll)
 
 
 
-  const { isLoading, isError } = useWaitForTransaction({
-    hash: data?.hash
+  const { isLoading:isLoadingSetApprovalForAll,isSuccess:isSuccessSetApprovalForAll} = useWaitForTransaction({
+    hash: setApprovalForAllData?.hash
   })
 
 
 
 
 
-  const handlesaprove = (event) => {
-    let _price = event.target.value;
-    _price=ethers.utils.parseEther(_price.toString())
+  const handlePrice = (event) => {
+    const _price = event.target.value;
     setprice(_price);
-
+    const priceInWei=ethers.utils.parseEther(_price.toString())
+    setPriceInWei(priceInWei);
 
   };
 
@@ -181,29 +156,30 @@ const Listednft = ({ tokenindex }) => {
 
   const Aproved = async () => {
     if (address && isConnected) {
-      await writeAsync()
-      checkApprove();
+      await writeAsyncSetApprovalForAll()
     }
 
   }
 
 
+
   //Write function call  listing
   // OpenMarketplaceWriteContract
-  console.log(price);
-  const {config:listNftConfig} = usePrepareContractWrite({
+  const {config:configListNft} = usePrepareContractWrite({
     address: OPEN_MARKETPLACE_ADDRESS,
     abi: OPENMARKETPLACE_ABI,
     functionName:"listNft",
-    args:[NFT_ADDRESS,getMetadata?.edition,Payment??"0x596ef770d6bc5944f099ec5200f43f079241b2b0",price],
+    args:[NFT_ADDRESS,tokenId,Payment,priceInWei],
     chainId:97
 
   })
 
 
 
-  const {writeAsync:writeAsyncListNft,data:ListNftData}=useContractWrite(listNftConfig)
-
+  const {writeAsync:writeAsyncListNft,data:ListNftData}=useContractWrite(configListNft);
+  const { isLoading:isLoadingListNftData,isSuccess:isSuccessListNft} = useWaitForTransaction({
+    hash: ListNftData?.hash
+  })
 
 
 
@@ -211,7 +187,7 @@ const Listednft = ({ tokenindex }) => {
     <>
       <div className="itembx"
       >
-        <Link to={`/Nftdetails/${getMetadata?.edition}`}>
+        <Link to={`/Nftdetails/${tokenId}`}>
           <div className="itemimg">
             <img src={item1} />
           </div>
@@ -228,7 +204,7 @@ const Listednft = ({ tokenindex }) => {
         </div>
         <div className="box-btm">
           <div className="box-btm-l">
-            <p>{getMetadata?.edition}</p>
+            <p>#{tokenId}</p>
             <h3>{getMetadata?.name}</h3>
           </div>
           <div className="box-btm-r" >
@@ -264,7 +240,7 @@ const Listednft = ({ tokenindex }) => {
                 </Typography>
                 <TextField
                   id="price"
-                  onChange={handlesaprove}
+                  onChange={handlePrice}
                   value={price}
                   type="number"
                   placeholder="0"
@@ -301,26 +277,20 @@ const Listednft = ({ tokenindex }) => {
 
             </Grid>
           </Container>
-          {/* <Container>
-            <Stack spacing={2} direction="row" sx={{ pt: '15px' }} justifyContent={"space-between"}>
-              {IsApprovalForAll?
-                (<Button onClick={Aproved} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Approve</Button>)
-                :
-                (<Button variant="contained" sx={{ fontSize: "18px", width: "150px" }}>List</Button>)
-
-              }
-              <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>cancel</Button>
-            </Stack>
-
-          </Container> */}
           <Container>
             <Stack spacing={2} direction="row" sx={{ pt: '15px' }} justifyContent={"space-between"}>
               {!approved ?
-                (<Button onClick={Aproved} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Approve</Button>)
+                (<Button onClick={Aproved} disabled={isLoadingSetApprovalForAll} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Approve</Button>)
                 :
-                (<Button onClick={writeAsyncListNft} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>List</Button>)
-    
-
+                (<Button onClick={async()=>{
+                  try{
+                    await writeAsyncListNft?.()
+                  }catch(err){
+                    console.log(err)
+                  }
+                 
+                  }
+                  } disabled={isLoadingListNftData} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>List</Button>)
               }
               <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>cancel</Button>
             </Stack>

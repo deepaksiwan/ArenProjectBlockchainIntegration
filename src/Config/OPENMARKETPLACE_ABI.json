@@ -10,12 +10,18 @@
       },
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "listingId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "nftAddress",
         "type": "address"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
@@ -25,9 +31,15 @@
         "internalType": "uint256",
         "name": "price",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "buyAt",
+        "type": "uint256"
       }
     ],
-    "name": "ItemBought",
+    "name": "NftBought",
     "type": "event"
   },
   {
@@ -41,18 +53,30 @@
       },
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "listingId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "nftAddress",
         "type": "address"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "cancelledAt",
+        "type": "uint256"
       }
     ],
-    "name": "ItemCancelled",
+    "name": "NftCancelled",
     "type": "event"
   },
   {
@@ -66,12 +90,18 @@
       },
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "listingId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "nftAddress",
         "type": "address"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
@@ -81,9 +111,64 @@
         "internalType": "uint256",
         "name": "price",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "listingAt",
+        "type": "uint256"
       }
     ],
-    "name": "ItemListed",
+    "name": "NftListed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "seller",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "listingId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "nftAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "updateAt",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "acceptedToken",
+        "type": "address"
+      }
+    ],
+    "name": "NftUpdated",
     "type": "event"
   },
   {
@@ -109,7 +194,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "listingId",
         "type": "uint256"
       },
       {
@@ -127,7 +212,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "listingId",
         "type": "uint256"
       }
     ],
@@ -137,33 +222,8 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_acceptedToken",
-        "type": "address"
-      }
-    ],
-    "name": "checkIsAcceptedToken",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_ownerAddress",
-        "type": "address"
-      }
-    ],
-    "name": "geAlltListedNftByOwner",
+    "inputs": [],
+    "name": "geMyListedNft",
     "outputs": [
       {
         "components": [
@@ -196,6 +256,11 @@
             "internalType": "address",
             "name": "acceptedToken",
             "type": "address"
+          },
+          {
+            "internalType": "enum openMarketplace.Status",
+            "name": "status",
+            "type": "uint8"
           }
         ],
         "internalType": "struct openMarketplace.Listing[]",
@@ -241,6 +306,11 @@
             "internalType": "address",
             "name": "acceptedToken",
             "type": "address"
+          },
+          {
+            "internalType": "enum openMarketplace.Status",
+            "name": "status",
+            "type": "uint8"
           }
         ],
         "internalType": "struct openMarketplace.Listing[]",
@@ -268,7 +338,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "listingId",
         "type": "uint256"
       }
     ],
@@ -305,6 +375,11 @@
             "internalType": "address",
             "name": "acceptedToken",
             "type": "address"
+          },
+          {
+            "internalType": "enum openMarketplace.Status",
+            "name": "status",
+            "type": "uint8"
           }
         ],
         "internalType": "struct openMarketplace.Listing",
@@ -361,6 +436,11 @@
             "internalType": "address",
             "name": "acceptedToken",
             "type": "address"
+          },
+          {
+            "internalType": "enum openMarketplace.Status",
+            "name": "status",
+            "type": "uint8"
           }
         ],
         "internalType": "struct openMarketplace.Listing",
@@ -403,7 +483,7 @@
     "stateMutability": "view",
     "type": "function"
   },
-  {                                                                                                                                                                                                                                                                                       
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -528,13 +608,18 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_listingId",
+        "name": "listingId",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
         "name": "_newPriceInWei",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_acceptedToken",
+        "type": "address"
       }
     ],
     "name": "updateListing",
@@ -544,7 +629,7 @@
   },
   {
     "inputs": [],
-    "name": "withdrow",
+    "name": "withdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

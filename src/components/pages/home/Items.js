@@ -8,9 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Box, Button, Typography, Modal, Grid, TextField, FormControl, Select, MenuItem, Stack } from '@mui/material';
 import { useStyles } from "./ItemStyle";
-import { useAccount, useContract, useContractRead, useProvider, useContractWrite, usePrepareContractWrite } from 'wagmi'
+import { useAccount, useContract, useContractRead, useProvider, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
 import { OPEN_MARKETPLACE_ADDRESS } from "../../../Config";
 import OPENMARKETPLACE_ABI from "../../../Config/OPENMARKETPLACE_ABI.json";
+import { useContext } from "react";
+import { OpenMarketplaceContext } from "../../../context/OpenMarketplaceContext";
+import { ethers } from "ethers";
 // import NFT_ABI from "../../../Config/NFT_ABI.json";
 // import item1 from '../../images/item1.svg'
 
@@ -21,67 +24,64 @@ import OPENMARKETPLACE_ABI from "../../../Config/OPENMARKETPLACE_ABI.json";
 
 const items = ({ ItemsData }) => {
   const { address, isConnected } = useAccount();
+  const { symbolAddress } = useContext(OpenMarketplaceContext)
   const provider = useProvider();
   const classes = useStyles();
   const [Payment, setPayment] = React.useState('');
   const [price, setprice] = useState(0);
-  console.log("price", price)
+  const [priceInWei,setPriceInWei]=useState();
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () =>  setOpen(false);
 
-  const handleChangepayment = (event) => {
-    setPayment(event.target.value);
-  };
-
-
-
-  //Payment Option edit
-  const _payment = useContractRead({
-    address: OPEN_MARKETPLACE_ADDRESS,
-    abi: OPENMARKETPLACE_ABI,
-    functionName: 'getERCTokenList',
-  })
-
-  let Option = _payment?.data
-
-
-
-
-  const onChangeHandler = (e) => {
-    setPayment(e.target.value)
-  }
-
-  const handlesaprove = async (e) => {
-    let _price = e.target.value;
+  // set Price
+  const handlePrice = (event) => {
+    const _price = event.target.value;
     setprice(_price);
-
+    const priceInWei=ethers.utils.parseEther(_price.toString())
+    setPriceInWei(priceInWei);
 
   };
+
+  //set payment
+  const onChangeHandler = (e,val) => {
+    setPayment(val.props.value)
+  }
 
 
   //Update function call
-  const { config } = usePrepareContractWrite({
-    mode:"prepared",
+  const { config:configUpdateListing } = usePrepareContractWrite({
     address: OPEN_MARKETPLACE_ADDRESS,
     abi: OPENMARKETPLACE_ABI,
     functionName: 'updateListing',
-    args: [{ _listingId: "4", _newPriceInWei: "6" },]
+    args: [ItemsData?.listingId, priceInWei ,Payment]
   })
 
-  
-
-  const { write } = useContractWrite(config)
-
-
-  const Update = async () => {
-    if (address && isConnected) {
-      await write();
-      handlesaprove();
-      onChangeHandler();
+  const { writeAsync:writeAsyncUpdateListing,data:updateListingData } = useContractWrite(configUpdateListing)
+  const {isLoadingUpdateListing}=useWaitForTransaction({
+    hash:updateListingData?.hash,
+    onSuccess(data){
+      window.location.reload();
     }
-  }
+  })
+
+
+    // Cancelled function call
+    const { config:configCancelListing } = usePrepareContractWrite({
+      address: OPEN_MARKETPLACE_ADDRESS,
+      abi: OPENMARKETPLACE_ABI,
+      functionName: 'cancelListing',
+      args: [ItemsData?.listingId]
+    })
+  
+    const { writeAsync:writeAsyncCancelListing,data:cancelListingData } = useContractWrite(configCancelListing)
+    const {isLoading:isLoadingCancelListing}=useWaitForTransaction({
+      hash:cancelListingData?.hash,
+      onSuccess(data){
+        window.location.reload();
+      }
+    })
 
 
   return (
@@ -92,7 +92,7 @@ const items = ({ ItemsData }) => {
       // {()=> item(props.ItemsData.id)
       // }
       >
-        <Link to={`/Listitems/${ItemsData.id}`}>
+        <Link to={`/Listitems/${ItemsData.listingId}`}>
           <div className="itemimg">
             <img src={ItemsData.image} />
           </div>
@@ -109,7 +109,7 @@ const items = ({ ItemsData }) => {
         </div>
         <div className="box-btm">
           <div className="box-btm-l">
-            <p>{ItemsData.p}</p>
+            <p>{ItemsData.tokenId}</p>
             <h3>{ItemsData.name}</h3>
           </div>
           <div className="box-btm-r">
@@ -151,33 +151,36 @@ const items = ({ ItemsData }) => {
                   set Price
                 </Typography>
                 <TextField
-                  onChange={handlesaprove}
-                  placeholder="0"
+                  id="price"
+                  onChange={handlePrice}
                   value={price}
-                  fontColor="red" type="number" id="outlined-basic" label="" variant="outlined" sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", input: { color: "#fff" } }} />
+                  type="number"
+                  placeholder="0"
+                  fontColor="#fff" label="" variant="outlined" sx={{ width: '100%', border: "1px solid #fff", marginTop: "5px", borderRadius: "5px", input: { color: "#fff", fontSize: "18px", padding: "14px !important" } }} />
               </Grid>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px' }}>
                   Payment option
                 </Typography>
                 <Box >
-                  <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px" }}>
+                  <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", input: { color: "#fff", } }}>
 
                     <Select
+
                       fullWidth
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
                       value={Payment}
                       onChange={onChangeHandler}
-
-                      sx={{ color: '#fff' }}
+                      sx={{ color: '#fff', fontSize: "15px", }}
 
                     >
-                      {Option && Option.map((v) => {
+                      {symbolAddress && symbolAddress?.map(({ symbol, address }, index) => {
                         return (
-                          <MenuItem value="MNG">{v}</MenuItem>
+                          <MenuItem key={index} value={address}>{symbol}</MenuItem>
                         )
                       })}
+
                     </Select>
                   </FormControl>
                 </Box>
@@ -186,10 +189,24 @@ const items = ({ ItemsData }) => {
           </Box>
           <Box>
             <Stack spacing={2} direction="row" sx={{ pt: '15px' }} justifyContent={"space-between"}>
-              <Button onClick={Update} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Update</Button>
-              <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>concel</Button>
+              <Button onClick={async()=>{
+                try{
+                  await writeAsyncUpdateListing?.()
+                }catch(err){
+                  console.log(err)
+                }
+              }} disabled={isLoadingUpdateListing} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Update</Button>
+              <Button onClick={async()=>{
+                try{
+                  await writeAsyncCancelListing?.()
+                }catch(err){
+                  console.log(err)
+                }
+              }} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Cancel</Button>
             </Stack>
-
+            <Box sx={{textAlign: "center", marginTop:"20px"}}>
+               <Button  onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px", justifyContent:"center" }}>Close</Button>
+          </Box>
           </Box>
         </Box>
       </Modal>

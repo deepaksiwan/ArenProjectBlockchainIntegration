@@ -17,6 +17,7 @@ import item1 from '../../images/item1.svg'
 import { getUserNFTByTokenURI } from "../../../api/ApiCall/GetUseNFTById";
 import { log } from "util";
 import { ethers } from "ethers";
+import Loader from "./Loader.js";
 
 
 const allCategory = [... new Set(ItemsData.map((e)=> e.category))]
@@ -87,6 +88,7 @@ const getAllNFTs=async()=>{
       price:price,
       seller:item?.seller,
       acceptedToken:item?.acceptedToken,
+      status:item.status,
       name:meta.name,
       edition:meta.edition,
       image:item1
@@ -102,7 +104,7 @@ useEffect(()=>{
   if(!allNftDataFetched){
     getAllNFTs?.();
   }
-})
+},[address,isConnected])
 
 // console.log(allNftData);
 
@@ -203,14 +205,20 @@ useEffect(()=>{
               </div>
               <div className="filter-item col-md-9 col-sm-12">
                 <div className="row">
-                  {allNftData.map((e,index) => {
-                    console.log("e",e)
+                  { allNftData.length>0 ? (allNftData.map((e,index) => {
                     return (
                       <div className="col-lg-4 pb-4 col-md-6">
+    
                         <Marketplaceitem ItemsData={e} key={index} />
+                        
+    
                       </div>
                     );
-                  })}
+                  })
+                  ):(
+                    <Loader/>
+                  )
+                  }
                 </div>
               </div>
             </div>

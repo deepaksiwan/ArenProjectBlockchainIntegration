@@ -24,6 +24,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 
 import { Buffer } from 'buffer'
+import { OpenMarketplaceProvider } from './context/OpenMarketplaceContext';
 
 
 const bsc = {
@@ -95,7 +96,9 @@ root.render(
     <WagmiConfig client={client}> 
     <RainbowKitProvider chains={chains} modalSize="compact"> 
     <QueryClientProvider client={queryClient}>
+    <OpenMarketplaceProvider>
     <App />
+    </OpenMarketplaceProvider>
     </QueryClientProvider>
      </RainbowKitProvider> 
    </WagmiConfig> 
