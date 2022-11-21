@@ -104,9 +104,34 @@ useEffect(()=>{
   if(!allNftDataFetched){
     getAllNFTs?.();
   }
-},[address,isConnected])
+},[address,isConnected,!allNftDataFetched,allNftData])
 
 // console.log(allNftData);
+
+const [minPrice,setMinPrice]=useState(1);
+const [maxPrice,setMaxPrice]=useState(11);
+const [filterData,setFilterData]=useState([])
+const [status,setStatus]=useState({"LISTED":2,"CANCELLED":1,"SOLD":0});
+
+// const filterByStatus=async()=>{
+//   switch(status){
+//     case status.LISTED:{
+//       const filterData=await allNftData?.filter((data)=>{
+//         return  data?.status===status.LISTED
+//       }).map((data)=>{
+//         return data;
+//       })
+//     }
+//   }
+// }
+const filterNft=async()=>{
+  const filterData=await allNftData?.filter((data)=>{
+    return data?.price<=parseInt(maxPrice,10) && data?.price>=parseInt(minPrice,10) && data?.status===status.LISTED
+  }).map((data)=>{
+    return data;
+  })
+  setFilterData(filterData)
+}
 
 
  
@@ -191,13 +216,13 @@ useEffect(()=>{
                     <li>
                       <h3>PRICE RANGE</h3>
                       <div className="p-range">
-                        <input type="text" placeholder="Min" />
-                        <input type="text" placeholder="Max" />
+                        <input type="text" placeholder="Min" value={minPrice} onChange={(e)=>setMinPrice(e.target.value)} />
+                        <input type="text" placeholder="Max" value={maxPrice} onChange={(e)=>setMaxPrice(e.target.value)} />
                       </div>
                     </li>
                     <li>
                       <div className="apply">
-                        <a href="#">APPLY</a>
+                        <a href="#" onClick={filterNft}>APPLY</a>
                       </div>
                     </li>
                   </ul>
@@ -205,7 +230,7 @@ useEffect(()=>{
               </div>
               <div className="filter-item col-md-9 col-sm-12">
                 <div className="row">
-                  { allNftData.length>0 ? (allNftData.map((e,index) => {
+                  { !!filterData.length<=0?(allNftData.length>0 ? (allNftData.map((e,index) => {
                     return (
                       <div className="col-lg-4 pb-4 col-md-6">
     
@@ -217,6 +242,21 @@ useEffect(()=>{
                   })
                   ):(
                     <Loader/>
+                  )
+                  ):(
+                    filterData.length>0 ? (filterData.map((e,index) => {
+                    return (
+                      <div className="col-lg-4 pb-4 col-md-6">
+    
+                        <Marketplaceitem ItemsData={e} key={index} />
+                        
+    
+                      </div>
+                    );
+                  })
+                  ):(
+                    <Loader/>
+                  )
                   )
                   }
                 </div>

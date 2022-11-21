@@ -49,7 +49,6 @@ function Listitems() {
   const provider = useProvider()
   const classes = useStyles();
   const { id: listingId } = useParams();
-  console.log(listingId);
   const { openConnectModal } = useConnectModal();
   const { address, isConnected } = useAccount();
   const { symbolAddress } = useContext(OpenMarketplaceContext)
@@ -96,7 +95,7 @@ function Listitems() {
       const formatPrice = ethers.utils.formatUnits(price?.toString(), "ether")
       setFormatPrice(formatPrice)
     }
-  }, [listingId,address,getListingDetailByIdContract?.data])
+  }, [listingId, address, getListingDetailByIdContract?.data, address])
 
   const contract = useContract({
     address: NFT_ADDRESS,
@@ -141,7 +140,7 @@ function Listitems() {
 
   const approveERC20 = async () => {
     try {
-      await writeAsyncApprove();
+      await writeAsyncApprove?.();
     } catch (err) {
       console.log(err);
     }
@@ -157,8 +156,9 @@ function Listitems() {
         const contract = new ethers.Contract(OPEN_MARKETPLACE_ADDRESS, OPENMARKETPLACE_ABI, signer);
 
         const priceInWei = listingData?.price;
+        console.log(price);
         const platformFee = await contract.getPlatformFee();
-        const buy = await contract.buyNft(listingId, priceInWei, { value: Number(platformFee) })
+        const buy = await contract.buyNft(listingId, priceInWei, { value: platformFee })
         await buy.wait();
 
       })
@@ -260,9 +260,9 @@ function Listitems() {
                         <div className="character-b-cont-c">
                           <p>Price</p>
                           <h3>
-                            {/* <span>
+                            <span>
                               <img src={binance} />
-                            </span> */}
+                            </span>
                             {address && isConnected ? formatPrice : <p>{" "}</p>}
                           </h3>
                         </div>
@@ -276,14 +276,22 @@ function Listitems() {
                                     return <p>SOLD</p>;
                                   case 1:
                                     return <p>CANCELLED</p>;
-                                  case 2:
+                                  case 2: {
                                     return (
                                       listingData?.seller !== address ?
-                                        (isAproveERC20 ?
+                                        (!isAproveERC20 ?
                                           (<p onClick={buyNft}> Buy </p>) :
-                                          (<p onClick={approveERC20}> Approve </p>)) : (
+                                          (<p onClick={async() => {
+                                            console.log("ghbjn")
+                                            try {
+                                              await writeAsyncApprove();
+                                            } catch (err) {
+                                              console.log(err);
+                                            }
+                                          }}> Approve </p>)) : (
                                           <p onClick={handleOpen}> Edit</p>)
                                     )
+                                  }
                                 }
 
                               })
