@@ -14,7 +14,7 @@ import OPENMARKETPLACE_ABI from "../../../Config/OPENMARKETPLACE_ABI.json"
 import item1 from '../../images/item1.svg';
 import Loader from "../home/Loader.js"
 import { ethers } from "ethers";
-import { Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 //import { Balance, PanoramaFishEyeSharp } from "@mui/icons-material";
 
 const allCategory = [... new Set(ItemsData.map((e) => e.category))]
@@ -167,12 +167,22 @@ useEffect(()=>{
                       </div>
                     );
                   })):
-                ListedallNftDataFetched ? 
-                    <Typography>No NFT Listed</Typography>
+                (ListedallNftDataFetched ? (
+                  <Container>
+                <Grid>
+                  <Grid>
+                  <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h3" sx={{color:"white"}}> No NFT Listed</Typography>
+              </Box>
+                  </Grid>
+                </Grid>
+             </Container>
+                    )
                   : 
                   (
                     <Loader/>
                   )
+                )
                   }
                 </div>
               </div>
@@ -195,9 +205,26 @@ useEffect(()=>{
                       </div>
                     );
                   })
-                  ):(
-                    <Loader />
-                  )}
+                  ):
+                (!!NFTBalance ? (
+                  <Container>
+                <Grid>
+                  <Grid>
+                  <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="h3" sx={{color:"white"}}> You Have No NFT For Listing</Typography>
+              </Box>
+                  </Grid>
+                </Grid>
+             </Container>
+                    )
+                  : 
+                  (
+                    <Loader/>
+                  )
+                )
+                  
+                  
+                  }
                 </div>
 
               </div>

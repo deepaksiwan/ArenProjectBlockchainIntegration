@@ -208,13 +208,21 @@ useEffect(()=>{
                             </span> */}
                           </h3>
                         </div>
-                        <div className="ordernow-butn" onClick={openConnectModal}>
-                          <a href="#">
-                            <img src={orderl} />
-                            {address && isConnected ? <p onClick={handleOpen}>List</p> : <p>Connect</p>}
-                            <img src={orderr} />
-                          </a>
-                        </div>
+      
+                            {address && isConnected ? (
+                              <div className="ordernow-butn" onClick={handleOpen}>
+                             <a href="#">
+                               <img src={orderl} /><p>List</p><img src={orderr} />
+                                          </a>
+                                          </div>
+                              ):
+                            (<div className="ordernow-butn" onClick={openConnectModal}>
+                             <a href="#">
+                               <img src={orderl} /><p>Connect</p><img src={orderr} />
+                                          </a>
+                                          </div>)
+                             }
+        
                       </div>
                       <div className="skill-hding">
                         <h3>SKILLS</h3>
@@ -328,17 +336,17 @@ useEffect(()=>{
       >
         <Box sx={style}>
 
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ color: "#fff", fontSize: "15px" }}>
+          {/* <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ color: "#fff", fontSize: "15px" }}>
              {data?.name}
             </Typography>
           <Box sx={{ textAlign: "center", marginTop: "10px" }}>
             <img src={item1} style={{ width: "200px", height: "200px" }} />
-          </Box>
+          </Box> */}
           <Container sx={{ marginTop: "10px" }}>
             <Grid container spacing={2}>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px', textAlign: "center", marginTop: "5px" }}>
-                  set Price
+                 Price
                 </Typography>
                 <TextField
                   id="price"
@@ -350,7 +358,7 @@ useEffect(()=>{
               </Grid>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px', textAlign: "center", marginTop: "5px" }}>
-                  Payment option
+                  Payment Token
                 </Typography>
                 <Box sx={{ marginTop: "5px" }}>
                   <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", input: { color: "#fff", } }}>

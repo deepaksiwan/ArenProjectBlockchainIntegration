@@ -262,7 +262,7 @@ const Items = (props) => {
             <Grid container spacing={2}>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px' }}>
-                  set Price
+                  Price
                 </Typography>
                 <TextField
                   id="price"
@@ -274,7 +274,7 @@ const Items = (props) => {
               </Grid>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px' }}>
-                  Payment option
+                  Payment Token
                 </Typography>
                 <Box >
                   <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", input: { color: "#fff", } }}>
