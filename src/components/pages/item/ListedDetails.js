@@ -63,7 +63,6 @@ function Listitems() {
   const [tokenUri, setTokenUri] = useState("");
   const [formatPrice, setFormatPrice] = useState()
 
-
   // set Price
   const handlePrice = (event) => {
     const _price = event.target.value;
@@ -88,14 +87,7 @@ function Listitems() {
     args: [listingId]
   })
 
-  useEffect(() => {
-    if (address && isConnected) {
-      setListingData(getListingDetailByIdContract?.data)
-      const price = getListingDetailByIdContract?.data.priceInWei
-      const formatPrice = ethers.utils.formatUnits(price?.toString(), "ether")
-      setFormatPrice(formatPrice)
-    }
-  }, [listingId, address, getListingDetailByIdContract?.data, address])
+
 
   const contract = useContract({
     address: NFT_ADDRESS,
@@ -124,11 +116,12 @@ function Listitems() {
     args: [address, OPEN_MARKETPLACE_ADDRESS]
   })
 
+
   const { config: configApprove } = usePrepareContractWrite({
     address: listingData?.acceptedToken,
     abi: erc20ABI,
     functionName: 'approve',
-    args: [OPEN_MARKETPLACE_ADDRESS, listingData?.price]
+    args: [OPEN_MARKETPLACE_ADDRESS,ethers.utils.parseEther("1000000") ]
   })
   const { writeAsync: writeAsyncApprove, data: approveData } = useContractWrite(configApprove)
   const { isLoading } = useWaitForTransaction({
@@ -141,6 +134,8 @@ function Listitems() {
   const approveERC20 = async () => {
     try {
       await writeAsyncApprove?.();
+      setIsApprovedERC20(true);
+      
     } catch (err) {
       console.log(err);
     }
@@ -155,8 +150,7 @@ function Listitems() {
         //Pull the deployed contract instance
         const contract = new ethers.Contract(OPEN_MARKETPLACE_ADDRESS, OPENMARKETPLACE_ABI, signer);
 
-        const priceInWei = listingData?.price;
-        console.log(price);
+        const priceInWei = listingData?.priceInWei;
         const platformFee = await contract.getPlatformFee();
         const buy = await contract.buyNft(listingId, priceInWei, { value: platformFee })
         await buy.wait();
@@ -166,13 +160,6 @@ function Listitems() {
   }
 
 
-
-
-  useEffect(() => {
-    if (address && isConnected && checkAllowanceContract?.data === listingData?.priceInWei) {
-      setIsApprovedERC20(true);
-    }
-  }, [checkAllowanceContract?.data, !isAproveERC20, address])
 
 
   //Update function call
@@ -207,7 +194,20 @@ function Listitems() {
     }
   })
 
+  useEffect(() => {
+    if (address && isConnected) {
+      setListingData(getListingDetailByIdContract?.data)
+      const price = getListingDetailByIdContract?.data.priceInWei
+      const formatPrice = ethers.utils.formatUnits(price?.toString(), "ether")
+      setFormatPrice(formatPrice)
+    }
+  }, [listingId, address, getListingDetailByIdContract?.data, address,checkAllowanceContract?.data,isLoadingCancelListing ,isLoadingUpdateListing])
 
+  useEffect(() => {
+    if (address && isConnected && checkAllowanceContract?.data >= listingData?.priceInWei) {
+      setIsApprovedERC20(true);
+    }
+  }, [checkAllowanceContract?.data, isAproveERC20, address,isConnected])
 
   return (
     <div>
@@ -279,10 +279,9 @@ function Listitems() {
                                   case 2: {
                                     return (
                                       listingData?.seller !== address ?
-                                        (!isAproveERC20 ?
+                                        (isAproveERC20 ?
                                           (<p onClick={buyNft}> Buy </p>) :
                                           (<p onClick={async() => {
-                                            // console.log("ghbjn")
                                             try {
                                               await approveERC20();
                                             } catch (err) {
@@ -328,59 +327,52 @@ function Listitems() {
                         <img src={skillimg} />
                       </div>
                       <div className="stats-main-wrp">
-                        <div className="row">
-
+                      <div className="row">
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>Character</h3>
                               <p>{data?.attributes?.[0]?.Character}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>Category</h3>
                               <p>{data?.attributes?.[1]?.Category}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>Rank</h3>
                               <p>{data?.attributes?.[2]?.Rank}</p>
                             </div>
                           </div>
-
-                          {/* 
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[1]?.trait_type}</h3>
-                              <p>{data?.attributes?.[1]?.value}</p>
+                              <p>{data?.attributes?.[3]?.Hp}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[2]?.trait_type}</h3>
-                              <p>{data?.attributes?.[2]?.value}</p>
+                              <p>{data?.attributes?.[4]?.Atk}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[3]?.trait_type}</h3>
-                              <p>{data?.attributes?.[3]?.value}</p>
+                              <p>{data?.attributes?.[5]?.Speed}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[4]?.trait_type}</h3>
-                              <p>{data?.attributes?.[4]?.value}</p>
+                              <p>{data?.attributes?.[6]?.Block}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[5]?.trait_type}</h3>
-                              <p>{data?.attributes?.[5]?.value}</p>
+                              <p>{data?.attributes?.[7]?.Crit}</p>
                             </div>
-                          </div> */}
-
+                          </div>
+                          <div className="col-lg-4">
+                            <div className="stats">
+                              <p>{data?.attributes?.[8]?.Dodge}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

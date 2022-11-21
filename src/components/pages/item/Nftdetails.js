@@ -255,59 +255,52 @@ useEffect(()=>{
                         <img src={skillimg} />
                       </div>
                       <div className="stats-main-wrp">
-                        <div className="row">
-
+                      <div className="row">
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>common</h3>
                               <p>{data?.attributes?.[0]?.Character}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>common</h3>
                               <p>{data?.attributes?.[1]?.Category}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>common</h3>
                               <p>{data?.attributes?.[2]?.Rank}</p>
                             </div>
                           </div>
-                         
-
-                          {/* <div className="col-lg-4">
+                          <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[1]?.trait_type}</h3>
-                              <p>{data?.attributes?.[1]?.value}</p>
+                              <p>{data?.attributes?.[3]?.Hp}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[2]?.trait_type}</h3>
-                              <p>{data?.attributes?.[2]?.value}</p>
+                              <p>{data?.attributes?.[4]?.Atk}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[3]?.trait_type}</h3>
-                              <p>{data?.attributes?.[3]?.value}</p>
+                              <p>{data?.attributes?.[5]?.Speed}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[4]?.trait_type}</h3>
-                              <p>{data?.attributes?.[4]?.value}</p>
+                              <p>{data?.attributes?.[6]?.Block}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>{data?.attributes?.[5]?.trait_type}</h3>
-                              <p>{data?.attributes?.[5]?.value}</p>
+                              <p>{data?.attributes?.[7]?.Crit}</p>
                             </div>
-                          </div> */}
-
+                          </div>
+                          <div className="col-lg-4">
+                            <div className="stats">
+                              <p>{data?.attributes?.[8]?.Dodge}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
