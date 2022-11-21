@@ -109,20 +109,20 @@ const items = ({ ItemsData }) => {
         </div>
         <div className="box-btm">
           <div className="box-btm-l">
-            <p>{ItemsData.tokenId}</p>
+            <p>#{ItemsData.tokenId}</p>
             <h3>{ItemsData.name}</h3>
           </div>
           <div className="box-btm-r">
 
-            <p>{ItemsData.title}</p>
+            <p>Price</p>
             <h3>
-              {/* <span>
+              <span>
                 <img src={binance} />
-              </span> */}
+              </span>
               {ItemsData.price}
             </h3>
           </div>
-          <div className="editbutton" onClick={handleOpen}> <button>Edit</button> </div>
+          {/* <div className="editbutton" onClick={handleOpen}> <button>Edit</button> </div> */}
 
         </div>
       </div>

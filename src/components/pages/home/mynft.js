@@ -14,6 +14,7 @@ import OPENMARKETPLACE_ABI from "../../../Config/OPENMARKETPLACE_ABI.json"
 import item1 from '../../images/item1.svg';
 import Loader from "../home/Loader.js"
 import { ethers } from "ethers";
+import { Typography } from "@mui/material";
 //import { Balance, PanoramaFishEyeSharp } from "@mui/icons-material";
 
 const allCategory = [... new Set(ItemsData.map((e) => e.category))]
@@ -131,7 +132,8 @@ const geAllListedNftByOwner = async()=>{
   setListedAllNftData(items)
 }
 useEffect(()=>{
-  if(!ListedallNftDataFetched && address && isConnected){
+
+  if(address && isConnected){
     geAllListedNftByOwner?.();
   }
 },[signer])
@@ -164,7 +166,11 @@ useEffect(()=>{
                         <Items ItemsData={e} key={index} />
                       </div>
                     );
-                  })):(
+                  })):
+                ListedallNftDataFetched ? 
+                    <Typography>No NFT Listed</Typography>
+                  : 
+                  (
                     <Loader/>
                   )
                   }

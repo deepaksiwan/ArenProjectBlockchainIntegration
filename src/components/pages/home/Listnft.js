@@ -178,7 +178,9 @@ useEffect(()=>{
 
   const {writeAsync:writeAsyncListNft,data:ListNftData}=useContractWrite(configListNft);
   const { isLoading:isLoadingListNftData,isSuccess:isSuccessListNft} = useWaitForTransaction({
-    hash: ListNftData?.hash
+    hash: ListNftData?.hash, onSuccess(data){
+      window.location.reload()
+    }    
   })
 
 
@@ -229,14 +231,14 @@ useEffect(()=>{
           {/* <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ color: "#fff", fontSize: "15px" }}>
               NFT NAME
             </Typography> */}
-          <Box sx={{ textAlign: "center", marginTop: "10px" }}>
+          {/* <Box sx={{ textAlign: "center", marginTop: "10px" }}>
             <img src={item1} style={{ width: "200px", height: "200px" }} />
-          </Box>
+          </Box> */}
           <Container sx={{ marginTop: "10px" }}>
             <Grid container spacing={2}>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px', textAlign: "center", marginTop: "5px" }}>
-                  set Price
+                 Price
                 </Typography>
                 <TextField
                   id="price"
@@ -248,7 +250,7 @@ useEffect(()=>{
               </Grid>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px', textAlign: "center", marginTop: "5px" }}>
-                  Payment option
+                  Payment token
                 </Typography>
                 <Box sx={{ marginTop: "5px" }}>
                   <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", input: { color: "#fff", } }}>
