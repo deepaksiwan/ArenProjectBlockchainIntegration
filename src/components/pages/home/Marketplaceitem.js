@@ -210,7 +210,7 @@ const Items = (props) => {
           </div>
           <div className="box-btm-r">
 
-            <p>{props?.ItemsData.title}</p>
+            <p>Price</p>
             <h3>
               <span>
                 <img src={binance} />
@@ -218,7 +218,7 @@ const Items = (props) => {
               {props?.ItemsData.price}
             </h3>
           </div>
-          <div className="editbutton">
+          {/* <div className="editbutton">
           { (()=>{
             switch(props?.ItemsData.status){
               case 0:
@@ -237,7 +237,7 @@ const Items = (props) => {
           
           })
           ()}
-           </div>
+           </div> */}
         </div>
       </div>
 

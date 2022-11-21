@@ -219,7 +219,7 @@ function Listitems() {
             <div className="item-wrp">
               <div className="item-hding">
                 <img src={hdingarrowleft} />
-                <h1>WEAPON NAME</h1>
+                <h1>{data?.name}</h1>
                 <img src={hdingarrowright} />
               </div>
               <div className="item">
@@ -232,19 +232,19 @@ function Listitems() {
                       <ul className="item-left-list">
                         <li>
                           <h3>
-                            Level: <strong>5</strong>
+                            Level: <strong>NA</strong>
                           </h3>
                           <div className="itemlist-line"></div>
                         </li>
                         <li>
                           <h3>
-                            Faction: <strong>ETHERIA</strong>
+                            Faction: <strong>NA</strong>
                           </h3>
                           <div className="itemlist-line"></div>
                         </li>
                         <li>
                           <h3>
-                            Class: <strong>MAGE</strong>
+                            Class: <strong>NA</strong>
                           </h3>
                         </li>
                       </ul>
@@ -282,9 +282,9 @@ function Listitems() {
                                         (!isAproveERC20 ?
                                           (<p onClick={buyNft}> Buy </p>) :
                                           (<p onClick={async() => {
-                                            console.log("ghbjn")
+                                            // console.log("ghbjn")
                                             try {
-                                              await writeAsyncApprove();
+                                              await approveERC20();
                                             } catch (err) {
                                               console.log(err);
                                             }
@@ -312,22 +312,10 @@ function Listitems() {
                               <div class="block one">
                                 <div class="block__item block__items2">
                                   <div class="block__title1">
-                                    Active skill: <span>Mana regeneration</span>
+                                    {/* Active skill: <span>Mana regeneration</span> */}
                                   </div>
                                   <div class="block__title1">
-                                    Donec urna leo, efficitur et nisi et,
-                                    facilisis sollicitudin nisl. Nunc id quam
-                                    lorem. Duis congue in sem quis lacinia.
-                                    Mauris leo orci, congue ultricies justo id,
-                                    pretium sollicitudin ipsum. Curabitur
-                                    fringilla tortor sed dui tincidunt viverra.
-                                    <br />
-                                    <br />
-                                    Nunc id quam lorem. Duis congue in sem quis
-                                    lacinia. Mauris leo orci, congue ultricies
-                                    justo id, pretium sollicitudin ipsum.
-                                    Curabitur fringilla tortor sed dui tincidunt
-                                    viverra.
+                                  NA
                                   </div>
                                 </div>
                               </div>
@@ -344,19 +332,19 @@ function Listitems() {
 
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>common</h3>
+                              <h3>Character</h3>
                               <p>{data?.attributes?.[0]?.Character}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>common</h3>
+                              <h3>Category</h3>
                               <p>{data?.attributes?.[1]?.Category}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                              <h3>common</h3>
+                              <h3>Rank</h3>
                               <p>{data?.attributes?.[2]?.Rank}</p>
                             </div>
                           </div>

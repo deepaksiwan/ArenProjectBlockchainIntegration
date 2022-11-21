@@ -126,7 +126,8 @@ const [status,setStatus]=useState({"LISTED":2,"CANCELLED":1,"SOLD":0});
 // }
 const filterNft=async()=>{
   const filterData=await allNftData?.filter((data)=>{
-    return data?.price<=parseInt(maxPrice,10) && data?.price>=parseInt(minPrice,10) && data?.status===status.LISTED
+    // return data?.price<=parseInt(maxPrice,10) && data?.price>=parseInt(minPrice,10) && data?.status===status.LISTED
+    return data?.price<=parseInt(maxPrice,10) && data?.price>=parseInt(minPrice,10) 
   }).map((data)=>{
     return data;
   })
