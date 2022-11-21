@@ -5,7 +5,7 @@ import { textAlign } from '@mui/system';
 
 const  Loader =() =>{
   return (
-    <Box sx={{ display: 'flex',  justifyContent:"center"}}>
+    <Box sx={{ display: 'flex',  justifyContent:"center",height:"23.3rem"}}>
       <CircularProgress />
     </Box>
   );

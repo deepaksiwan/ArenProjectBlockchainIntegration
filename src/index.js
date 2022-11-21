@@ -65,9 +65,16 @@ const bscTest = {
 }
 
 const { chains,provider,webSocketProvider } = configureChains([
-  chain.mainnet,chain.goerli,chain.sepolia,chain.polygon,chain.polygonMumbai,chain.arbitrum,chain.optimism,bsc,bscTest
+  bscTest,
 ], [
-  publicProvider()
+  publicProvider(),
+  jsonRpcProvider({
+    priority:0,
+    rpc: (chain) => {
+      if (chain.id !== bscTest.id) return null
+      return { http: chain.rpcUrls.default }
+    },
+  }),
 ]);
 const { connectors } = getDefaultWallets({
   appName: 'My RainbowKit App',

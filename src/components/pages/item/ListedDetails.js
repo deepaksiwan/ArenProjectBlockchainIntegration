@@ -62,7 +62,7 @@ function Listitems() {
   const [isAproveERC20, setIsApprovedERC20] = useState(false);
   const [tokenUri, setTokenUri] = useState("");
   const [formatPrice, setFormatPrice] = useState()
-
+  const [allowance,setAllowance]=useState()
   // set Price
   const handlePrice = (event) => {
     const _price = event.target.value;
@@ -113,8 +113,19 @@ function Listitems() {
     address: listingData?.acceptedToken,
     abi: erc20ABI,
     functionName: 'allowance',
-    args: [address, OPEN_MARKETPLACE_ADDRESS]
+    args: [address, OPEN_MARKETPLACE_ADDRESS],
   })
+
+  useEffect(() => {
+    if (address && isConnected && checkAllowanceContract?.data) {
+      const price =Number(listingData?.priceInWei.toString())
+      const allowance=Number(checkAllowanceContract?.data.toString())
+      if(allowance > price){
+        setIsApprovedERC20(true);
+      }
+      
+    }
+  }, [checkAllowanceContract?.data, address,isConnected,listingData?.priceInWei])
 
 
   const { config: configApprove } = usePrepareContractWrite({
@@ -128,13 +139,20 @@ function Listitems() {
     hash: approveData?.hash,
     onSuccess(data) {
       window.location.reload();
+      setIsApprovedERC20(true)
     },
   })
 
   const approveERC20 = async () => {
     try {
       await writeAsyncApprove?.();
-      setIsApprovedERC20(true);
+
+      const price =Number(listingData?.priceInWei.toString())
+      const allowance=Number(checkAllowanceContract?.data.toString())
+      if(allowance > price){
+        setIsApprovedERC20(true);
+      }
+
       
     } catch (err) {
       console.log(err);
@@ -195,19 +213,16 @@ function Listitems() {
   })
 
   useEffect(() => {
-    if (address && isConnected) {
+    if (listingId || checkAllowanceContract?.data) {
       setListingData(getListingDetailByIdContract?.data)
-      const price = getListingDetailByIdContract?.data.priceInWei
+      const price = getListingDetailByIdContract?.data.priceInWei;
       const formatPrice = ethers.utils.formatUnits(price?.toString(), "ether")
       setFormatPrice(formatPrice)
+      // setAllowance(checkAllowanceContract?.data)
     }
-  }, [listingId, address, getListingDetailByIdContract?.data, address,checkAllowanceContract?.data,isLoadingCancelListing ,isLoadingUpdateListing])
+  }, [listingId, address, getListingDetailByIdContract?.data, isConnected,checkAllowanceContract?.data,isLoadingCancelListing ,isLoadingUpdateListing])
 
-  useEffect(() => {
-    if (address && isConnected && checkAllowanceContract?.data >= listingData?.priceInWei) {
-      setIsApprovedERC20(true);
-    }
-  }, [checkAllowanceContract?.data, isAproveERC20, address,isConnected])
+
 
   return (
     <div>
@@ -263,7 +278,7 @@ function Listitems() {
                             <span>
                               <img src={binance} />
                             </span>
-                            {address && isConnected ? formatPrice : <p>{" "}</p>}
+                            { formatPrice ? formatPrice : <p>{" "}</p>}
                           </h3>
                         </div>
                         <div className="ordernow-butn" onClick={openConnectModal}>
@@ -330,46 +345,55 @@ function Listitems() {
                       <div className="row">
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Character</h3>
                               <p>{data?.attributes?.[0]?.Character}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Category</h3>
                               <p>{data?.attributes?.[1]?.Category}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Rank</h3>
                               <p>{data?.attributes?.[2]?.Rank}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Hp</h3>
                               <p>{data?.attributes?.[3]?.Hp}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Atk</h3>
                               <p>{data?.attributes?.[4]?.Atk}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Speed</h3>
                               <p>{data?.attributes?.[5]?.Speed}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Block</h3>
                               <p>{data?.attributes?.[6]?.Block}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Crit</h3>
                               <p>{data?.attributes?.[7]?.Crit}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Dodge</h3>
                               <p>{data?.attributes?.[8]?.Dodge}</p>
                             </div>
                           </div>

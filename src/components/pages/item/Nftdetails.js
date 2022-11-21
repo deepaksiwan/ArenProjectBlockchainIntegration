@@ -258,46 +258,55 @@ useEffect(()=>{
                       <div className="row">
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Character</h3>
                               <p>{data?.attributes?.[0]?.Character}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Category</h3>
                               <p>{data?.attributes?.[1]?.Category}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Rank</h3>
                               <p>{data?.attributes?.[2]?.Rank}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Hp</h3>
                               <p>{data?.attributes?.[3]?.Hp}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Atk</h3>
                               <p>{data?.attributes?.[4]?.Atk}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Speed</h3>
                               <p>{data?.attributes?.[5]?.Speed}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Block</h3>
                               <p>{data?.attributes?.[6]?.Block}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Crit</h3>
                               <p>{data?.attributes?.[7]?.Crit}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
+                            <h3>Dodge</h3>
                               <p>{data?.attributes?.[8]?.Dodge}</p>
                             </div>
                           </div>
