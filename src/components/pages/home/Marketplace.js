@@ -108,8 +108,8 @@ useEffect(()=>{
 
 // console.log(allNftData);
 
-const [minPrice,setMinPrice]=useState(1);
-const [maxPrice,setMaxPrice]=useState(11);
+const [minPrice,setMinPrice]=useState();
+const [maxPrice,setMaxPrice]=useState();
 const [filterData,setFilterData]=useState([])
 const [status,setStatus]=useState({"LISTED":2,"CANCELLED":1,"SOLD":0});
 
