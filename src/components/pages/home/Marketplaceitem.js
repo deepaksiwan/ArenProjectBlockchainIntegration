@@ -14,6 +14,7 @@ import { OPEN_MARKETPLACE_ADDRESS } from "../../../Config";
 import OPENMARKETPLACE_ABI  from "../../../Config/OPENMARKETPLACE_ABI.json"
 import {ethers}  from "ethers";
 import { OpenMarketplaceContext } from "../../../context/OpenMarketplaceContext";
+import Loader from "./Loader";
 
 
 
@@ -309,17 +310,22 @@ const Items = (props) => {
                 }catch(err){
                   console.log(err)
                 }
-              }} disabled={isLoadingUpdateListing} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Update</Button>
+              }} disabled={isLoadingUpdateListing} variant="contained" sx={{ fontSize: "18px", width: "150px" ,bgcolor: "#32e0b4",fontWeight:"600"}}>
+              {isLoadingUpdateListing ? (<Loader/>): "Update"}
+              </Button>
               <Button onClick={async()=>{
                 try{
                   await writeAsyncCancelListing?.()
                 }catch(err){
                   console.log(err)
                 }
-              }} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Cancel</Button>
+              }} disabled={isLoadingCancelListing} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600" }}>
+
+              {isLoadingCancelListing?(<Loader/>):"Cancel"}
+              </Button>
             </Stack>
             <Box sx={{textAlign: "center", marginTop:"20px"}}>
-               <Button  onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px", justifyContent:"center" }}>Close</Button>
+               <Button  onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px", justifyContent:"center",bgcolor: "#32e0b4",fontWeight:"600" }}>Close</Button>
           </Box>
           </Box>
         </Box>

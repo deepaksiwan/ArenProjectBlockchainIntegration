@@ -21,6 +21,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import { ethers } from "ethers";
+import Loader from "../home/Loader.js";
 
 
 const style = {
@@ -361,7 +362,7 @@ useEffect(()=>{
                   Payment Token
                 </Typography>
                 <Box sx={{ marginTop: "5px" }}>
-                  <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", input: { color: "#fff", } }}>
+                  <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", marginTop: "5px", borderRadius: "5px", input: { color: "#fff", } }}>
 
                     <Select
 
@@ -390,7 +391,9 @@ useEffect(()=>{
           <Container>
             <Stack spacing={2} direction="row" sx={{ pt: '15px' }} justifyContent={"space-between"}>
               {!approved ?
-                (<Button onClick={Aproved} disabled={isLoadingSetApprovalForAll} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Approve</Button>)
+                (<Button onClick={Aproved} disabled={isLoadingSetApprovalForAll} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"} }}>
+                {isLoadingSetApprovalForAll?<Loader/>:"Approve"}
+                </Button>)
                 :
                 (<Button onClick={async()=>{
                   try{
@@ -400,9 +403,11 @@ useEffect(()=>{
                   }
                  
                   }
-                  } disabled={isLoadingListNftData} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>List</Button>)
+                  } disabled={isLoadingListNftData} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"} }}>
+                  {isLoadingListNftData?<Loader/>:"List"}
+                  </Button>)
               }
-              <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>cancel</Button>
+              <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"} }}>cancel</Button>
             </Stack>
           </Container>
         </Box>

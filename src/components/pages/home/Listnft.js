@@ -4,7 +4,6 @@ import { Box, TextField, Modal, Grid, MenuItem, Container, Stack, Button, Avatar
 import styled from "@emotion/styled";
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
-
 import { getUserNFTByTokenURI } from "../../../api/ApiCall/GetUseNFTById";
 
 
@@ -38,6 +37,7 @@ import * as Yup from "yup";
 import { IndexKind } from "typescript";
 import { ethers } from "ethers";
 import { OpenMarketplaceContext } from "../../../context/OpenMarketplaceContext";
+import Loader from "./Loader";
 
 const style = {
   position: 'absolute',
@@ -65,7 +65,6 @@ const Listednft = ({ tokenindex }) => {
   const [Payment, setPayment] = React.useState('');
   const [open, setOpen] = React.useState(false);
   const [approved, setApproved] = React.useState(false);
-  const [open1, setOpen1] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [priceInWei,setPriceInWei]=useState();
@@ -211,9 +210,9 @@ useEffect(()=>{
           </div>
           <div className="box-btm-r" >
             <h3>
-              <button className="buttonstyle" onClick={handleOpen} >
+              <Button variant="contained" sx={{ fontSize: "15px", width: "85px",bgcolor: "#32e0b4",fontWeight:"600",borderRadius:"0px","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"}}} onClick={handleOpen} >
                 List
-              </button>
+              </Button>
 
             </h3>
           </div>
@@ -282,7 +281,9 @@ useEffect(()=>{
           <Container>
             <Stack spacing={2} direction="row" sx={{ pt: '15px' }} justifyContent={"space-between"}>
               {!approved ?
-                (<Button onClick={Aproved} disabled={isLoadingSetApprovalForAll} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Approve</Button>)
+                (<Button onClick={Aproved} disabled={isLoadingSetApprovalForAll} variant="contained" sx={{ fontSize: "15px", width: "120px",bgcolor: "#32e0b4",fontWeight:"600",borderRadius:"0px","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"}}}>
+                {isLoadingSetApprovalForAll?<Loader/>:"Approve"}
+                </Button>)
                 :
                 (<Button onClick={async()=>{
                   try{
@@ -292,9 +293,11 @@ useEffect(()=>{
                   }
                  
                   }
-                  } disabled={isLoadingListNftData} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>List</Button>)
+                  } disabled={isLoadingListNftData} variant="contained" sx={{ fontSize: "15px", width: "120px",bgcolor: "#32e0b4",fontWeight:"600",borderRadius:"0px","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"}}}>
+                  {isLoadingListNftData?<Loader/>:"List"}
+                  </Button>)
               }
-              <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>cancel</Button>
+              <Button onClick={handleClose} variant="contained" sx={{ fontSize: "15px", width: "120px",bgcolor: "#32e0b4",fontWeight:"600",borderRadius:"0px","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"}}}>cancel</Button>
             </Stack>
           </Container>
         </Box>

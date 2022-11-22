@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
-import Button from "react-bootstrap/Button";
+
 
 import "../css/style.css";
 import "../css/responsive.css";
@@ -11,14 +11,20 @@ import logo from "../images/logo.png";
 import burger from "../images/burger.png";
 import crosss from "../images/crosss.png";
 import { useNavigate } from "react-router-dom";
-import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useAccount, useContractRead, useProvider, useContract, usePrepareContractWrite, useContractWrite } from 'wagmi'
+import { useConnectModal,useAccountModal } from '@rainbow-me/rainbowkit';
+import { useAccount, useContractRead, useProvider, useContract, usePrepareContractWrite, useContractWrite,useDisconnect } from 'wagmi'
+import { Button } from "@mui/material";
+import orderl from "../images/orderl.svg";
+import orderr from "../images/orderr.svg";
+import { textTransform } from "@mui/system";
 
 const Header = () => {
   const navigate = useNavigate();
   const { openConnectModal } = useConnectModal();
+  const { openAccountModal } = useAccountModal();
   const { address, isConnected } = useAccount();
-  
+  // const { disconnect } = useDisconnect()
+
 
   useEffect(() => {
     changePickupStoreMenu();
@@ -48,7 +54,7 @@ const Header = () => {
   }, []);
 
 
-  const Mynfthandler = ()=>{
+  const Mynfthandler = () => {
     navigate("/Mynft")
 
   }
@@ -98,9 +104,18 @@ const Header = () => {
                     <Link to="#casino">Team</Link>
                   </li>
                   <li>
-                    <Link  onClick={openConnectModal}>{address && isConnected ? <p>{address.substring(0, 6) +
-            "...." +
-            address.substring(address.length - 6)}</p> : <p>Connect</p>}</Link>
+                    {address && isConnected ? (
+                      <p onClick={openAccountModal}>{address.substring(0, 6) +
+                      "..." +
+                      address.substring(address.length - 4)}</p>)
+                      :(
+
+                      <p className="connect-btn-link" onClick={openConnectModal}>
+                       
+                      Connect
+                      </p>
+                    )
+                    }
                   </li>
                 </ul>
               </li>

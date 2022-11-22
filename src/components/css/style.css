@@ -35,6 +35,16 @@ a:hover {
   font-weight: 100;
 }
 
+.connect-btn-link{
+  font-family: "Rubik" !important;
+  font-weight: 600;
+  cursor: pointer;
+}
+.connect-btn-link:hover{
+  color: #32e0b4 !important;
+}
+
+
 @font-face {
   font-family: "Rubik";
   src: url("../font/Rubik-Bold.woff2") format("woff2"),
@@ -750,6 +760,7 @@ body.smr-open .slide-menu-right {
 .box-btm {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 10px 15px;
 }
 .box-btm-l > h3 {

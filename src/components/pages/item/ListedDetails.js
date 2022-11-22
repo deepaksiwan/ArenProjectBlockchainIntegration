@@ -31,6 +31,9 @@ import filtericonl from '../../images/filtericonl.svg'
 import filtericonr from '../../images/filtericonr.svg'
 import { useQuery } from "react-query";
 import { getUserNFTByTokenURI } from "../../../api/ApiCall/GetUseNFTById.js";
+import { ErrorModal } from "../home/ErrorModal.js";
+import { isNull } from "util";
+import Loader from "../home/Loader"
 
 const style = {
   position: 'absolute',
@@ -62,7 +65,12 @@ function Listitems() {
   const [isAproveERC20, setIsApprovedERC20] = useState(false);
   const [tokenUri, setTokenUri] = useState("");
   const [formatPrice, setFormatPrice] = useState()
-  const [allowance,setAllowance]=useState()
+  const [erc20Blanace, setErc20Blanace] = useState();
+  const [openError, setOpenError] = React.useState(false);
+  const handleOpenError = () => setOpenError(true);
+  const handleCloseError = () => setOpenError(false);
+  const [error,setError]=useState("")
+
   // set Price
   const handlePrice = (event) => {
     const _price = event.target.value;
@@ -104,9 +112,29 @@ function Listitems() {
 
   const { data } = useQuery(["getUserNFTByTokenURI", tokenUri], () => getUserNFTByTokenURI(tokenUri), {
     onError: (data) => {
-      console.log({ data });
+      
+      setError(error)
+  
     }
   })
+
+
+
+  const checkBalanceOf = useContractRead({
+    address: listingData?.acceptedToken,
+    abi: erc20ABI,
+    functionName: 'balanceOf',
+    args: [address],
+    formatUnits: "ether"
+  })
+
+  useEffect(() => {
+    if (checkBalanceOf?.data) {
+      const format = ethers.utils.formatUnits(checkBalanceOf?.data.toString(), "ether")
+      setErc20Blanace(format)
+    }
+
+  }, [address, listingData?.acceptedToken, isConnected, listingId])
 
 
   const checkAllowanceContract = useContractRead({
@@ -118,21 +146,21 @@ function Listitems() {
 
   useEffect(() => {
     if (address && isConnected && checkAllowanceContract?.data) {
-      const price =Number(listingData?.priceInWei.toString())
-      const allowance=Number(checkAllowanceContract?.data.toString())
-      if(allowance > price){
+      const price = Number(listingData?.priceInWei.toString())
+      const allowance = Number(checkAllowanceContract?.data.toString())
+      if (allowance > price) {
         setIsApprovedERC20(true);
       }
-      
+
     }
-  }, [checkAllowanceContract?.data, address,isConnected,listingData?.priceInWei])
+  }, [checkAllowanceContract?.data, address, isConnected, listingData?.priceInWei])
 
 
   const { config: configApprove } = usePrepareContractWrite({
     address: listingData?.acceptedToken,
     abi: erc20ABI,
     functionName: 'approve',
-    args: [OPEN_MARKETPLACE_ADDRESS,ethers.utils.parseEther("1000000") ]
+    args: [OPEN_MARKETPLACE_ADDRESS, ethers.utils.parseEther("1000000")]
   })
   const { writeAsync: writeAsyncApprove, data: approveData } = useContractWrite(configApprove)
   const { isLoading } = useWaitForTransaction({
@@ -141,41 +169,67 @@ function Listitems() {
       window.location.reload();
       setIsApprovedERC20(true)
     },
+    onError(error){
+      setError(error)
+    }
   })
 
   const approveERC20 = async () => {
     try {
       await writeAsyncApprove?.();
 
-      const price =Number(listingData?.priceInWei.toString())
-      const allowance=Number(checkAllowanceContract?.data.toString())
-      if(allowance > price){
+      const price = Number(listingData?.priceInWei.toString())
+      const allowance = Number(checkAllowanceContract?.data.toString())
+      if (allowance > price) {
         setIsApprovedERC20(true);
       }
 
-      
+
     } catch (err) {
-      console.log(err);
+      setError(err)
     }
   }
 
   const buyNft = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    // console.log(signer);
-    provider.send("eth_requestAccounts", []).then(() => {
-      provider.listAccounts().then(async (accounts) => {
-        const signer = provider.getSigner(accounts[0]);
-        //Pull the deployed contract instance
-        const contract = new ethers.Contract(OPEN_MARKETPLACE_ADDRESS, OPENMARKETPLACE_ABI, signer);
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      provider.send("eth_requestAccounts", []).then(() => {
+        provider.listAccounts().then(async (accounts) => {
+          const signer = provider.getSigner(accounts[0]);
+          //Pull the deployed contract instance
+          const contract = new ethers.Contract(OPEN_MARKETPLACE_ADDRESS, OPENMARKETPLACE_ABI, signer);
 
-        const priceInWei = listingData?.priceInWei;
-        const platformFee = await contract.getPlatformFee();
-        const buy = await contract.buyNft(listingId, priceInWei, { value: platformFee })
-        await buy.wait();
+          const priceInWei = listingData?.priceInWei;
+          const platformFee = await contract.getPlatformFee();
+          const buy = await contract.buyNft(listingId, priceInWei, { value: platformFee })
+          await buy.wait();
 
-      })
-    })
+        }).catch((error)=>{ console.log(new Error(error?.message)); setError(JSON.stringify(error?.message))})
+      }).catch((error)=>{setError(JSON.stringify(error?.message))})
+    } catch (err) {
+      
+      
+    }
   }
+
+  // const platformFee = useContractRead({
+  //   address: OPEN_MARKETPLACE_ADDRESS,
+  //   abi: OPENMARKETPLACE_ABI,
+  //   functionName: 'getPlatformFee'
+  // })
+
+  //   // Buy Nft function call
+  //   const { config } = usePrepareContractWrite({
+  //     address: OPEN_MARKETPLACE_ADDRESS,
+  //     abi: OPENMARKETPLACE_ABI,
+  //     functionName: 'buyNFT',
+  //     args: [props?.itemData.listingId,props?.ItemsData.price],
+  //     overrides:{
+  //       value:ethers.utils.parseEther("0.0001")
+  //     }
+  //   })
+  
+    // const { writeAsync :writeAsyncBuyNft} = useContractWrite(config);
 
 
 
@@ -193,6 +247,9 @@ function Listitems() {
     hash: updateListingData?.hash,
     onSuccess(data) {
       window.location.reload();
+    },
+    onError(error){
+      setError(error)
     }
   })
 
@@ -210,6 +267,10 @@ function Listitems() {
     onSuccess(data) {
       window.location.reload();
     }
+    ,
+    onError(error){
+      setError(error)
+    }
   })
 
   useEffect(() => {
@@ -219,11 +280,11 @@ function Listitems() {
       const formatPrice = ethers.utils.formatUnits(price?.toString(), "ether")
       setFormatPrice(formatPrice)
       setprice(parseInt(formatPrice))
-      console.log(getListingDetailByIdContract?.data);
+      // console.log(getListingDetailByIdContract?.data);
       setPayment(getListingDetailByIdContract?.data.acceptedToken)
       // setAllowance(checkAllowanceContract?.data)
     }
-  }, [listingId, address, getListingDetailByIdContract?.data, isConnected,checkAllowanceContract?.data,isLoadingCancelListing ,isLoadingUpdateListing])
+  }, [listingId, address, getListingDetailByIdContract?.data, isConnected, checkAllowanceContract?.data, isLoadingCancelListing, isLoadingUpdateListing])
 
 
 
@@ -281,72 +342,83 @@ function Listitems() {
                             <span>
                               <img src={binance} />
                             </span>
-                            { formatPrice ? formatPrice : <p>{" "}</p>}
+                            {formatPrice ? formatPrice : <p>{" "}</p>}
                           </h3>
                         </div>
-                       <>                            
-                       {
+                        <>
+                          {
                             address && isConnected ?
-                             listingData?.status == 0 ?
-                             <div className="ordernow-butn" >
-                             <a href="#">
-                               <img src={orderl} />
-                               <p>SOLD</p>
-                            <img src={orderr} />
-                              </a>
-                              </div>
-                              :
-                              listingData?.status == 1 ?
-                              <div className="ordernow-butn" >
-                              <a href="#">
-                                <img src={orderl} />
-                                <p>CANCELLED</p>
-                            <img src={orderr} />
-                               </a>
-                               </div>
-                               :
-                              listingData?.status == 2 ?
-                                 
-                                      listingData?.seller !== address ?
-                                        isAproveERC20 ?
-                                        <div className="ordernow-butn" onClick={buyNft}>
-                                        <a href="#">
-                                          <img src={orderl} />
-                                          <p > Buy </p> 
-                                          
-                                          <img src={orderr} />
-                               </a>
-                               </div>
-                               :
-                               <div className="ordernow-butn" onClick={async() => {
-                                try {
-                                  await approveERC20();
-                                } catch (err) {
-                                  console.log(err);
-                                }
-                              }}>
-                               <a href="#">
-                                 <img src={orderl} />
-                                           <p > Approve </p>      <img src={orderr} />
-                                          </a>
-                                          </div>: (
-                                             <div className="ordernow-butn" onClick={handleOpen}>
-                                             <a href="#">
-                                               <img src={orderl} />
-                                               <p > Edit</p>     <img src={orderr} />
-                                          </a>
-                                          </div>)
-                                   
+                              listingData?.status == 0 ?
+                                <div className="ordernow-butn" >
+                                  <a href="#">
+                                    <img src={orderl} />
+                                    <p>SOLD</p>
+                                    <img src={orderr} />
+                                  </a>
+                                </div>
                                 :
-                                <></>
-                             : <div className="ordernow-butn" onClick={openConnectModal}>
-                             <a href="#">
-                               <img src={orderl} /><p>Connect</p><img src={orderr} />
+                                listingData?.status == 1 ?
+                                  <div className="ordernow-butn" >
+                                    <a href="#">
+                                      <img src={orderl} />
+                                      <p>CANCELLED</p>
+                                      <img src={orderr} />
+                                    </a>
+                                  </div>
+                                  :
+                                  listingData?.status == 2 ?
+
+                                    listingData?.seller !== address ?
+                                      isAproveERC20 ? (
+                                        !error ? (<div className="ordernow-butn" onClick={buyNft}>
+                                          <a href="#">
+                                            <img src={orderl} />
+                                            <p > Buy </p>
+
+                                            <img src={orderr} />
                                           </a>
+                                        </div>) : (
+                                          <div className="ordernow-butn" onClick={handleOpenError}>
+                                            <a href="#">
+                                              <img src={orderl} />
+                                              <p > Buy </p>
+
+                                              <img src={orderr} />
+                                            </a>
+
                                           </div>
+                                        )
+                                      )
+                                        :
+                                        <div className="ordernow-butn" onClick={async () => {
+                                          try {
+                                            await approveERC20();
+                                          } catch (err) {
+                                            console.log(err);
                                           }
-                      </>
-                                          </div>
+                                        }}>
+                                          <a href="#">
+                                            <img src={orderl} />
+                                            <p > Approve </p>      <img src={orderr} />
+                                          </a>
+                                        </div> : (
+                                        <div className="ordernow-butn" onClick={handleOpen}>
+                                          <a href="#">
+                                            <img src={orderl} />
+                                            <p > Edit</p>     <img src={orderr} />
+                                          </a>
+                                        </div>)
+
+                                    :
+                                    <></>
+                              : <div className="ordernow-butn" onClick={openConnectModal}>
+                                <a href="#">
+                                  <img src={orderl} /><p>Connect</p><img src={orderr} />
+                                </a>
+                              </div>
+                          }
+                        </>
+                      </div>
                       <div className="skill-hding">
                         <h3>SKILLS</h3>
                         <img src={skillimg} />
@@ -361,7 +433,7 @@ function Listitems() {
                                     {/* Active skill: <span>Mana regeneration</span> */}
                                   </div>
                                   <div class="block__title1">
-                                  NA
+                                    NA
                                   </div>
                                 </div>
                               </div>
@@ -374,58 +446,58 @@ function Listitems() {
                         <img src={skillimg} />
                       </div>
                       <div className="stats-main-wrp">
-                      <div className="row">
+                        <div className="row">
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Character</h3>
+                              <h3>Character</h3>
                               <p>{data?.attributes?.[0]?.Character}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Category</h3>
+                              <h3>Category</h3>
                               <p>{data?.attributes?.[1]?.Category}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Rank</h3>
+                              <h3>Rank</h3>
                               <p>{data?.attributes?.[2]?.Rank}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Hp</h3>
+                              <h3>Hp</h3>
                               <p>{data?.attributes?.[3]?.Hp}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Atk</h3>
+                              <h3>Atk</h3>
                               <p>{data?.attributes?.[4]?.Atk}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Speed</h3>
+                              <h3>Speed</h3>
                               <p>{data?.attributes?.[5]?.Speed}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Block</h3>
+                              <h3>Block</h3>
                               <p>{data?.attributes?.[6]?.Block}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Crit</h3>
+                              <h3>Crit</h3>
                               <p>{data?.attributes?.[7]?.Crit}</p>
                             </div>
                           </div>
                           <div className="col-lg-4">
                             <div className="stats">
-                            <h3>Dodge</h3>
+                              <h3>Dodge</h3>
                               <p>{data?.attributes?.[8]?.Dodge}</p>
                             </div>
                           </div>
@@ -475,7 +547,7 @@ function Listitems() {
                     Payment Token
                   </Typography>
                   <Box >
-                    <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", input: { color: "#fff", } }}>
+                    <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", marginTop: "5px", input: { color: "#fff", } }}>
 
                       <Select
 
@@ -501,25 +573,65 @@ function Listitems() {
             </Box>
             <Box>
               <Stack spacing={2} direction="row" sx={{ pt: '15px' }} justifyContent={"space-between"}>
-                <Button onClick={async () => {
+               { !error ? (<Button onClick={async () => {
                   try {
                     await writeAsyncUpdateListing?.()
                   } catch (err) {
-                    console.log(err)
+                    setError(err)
                   }
-                }} disabled={isLoadingUpdateListing} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Update</Button>
-                <Button onClick={async () => {
+                }} disabled={isLoadingUpdateListing} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"} }}>
+                {isLoadingUpdateListing ? (<Loader/>): "Update"}
+                </Button>):(
+                  <Button onClick={handleOpenError} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"} }}>
+                {isLoadingUpdateListing ? (<Loader/>): "Update"}
+                </Button>
+                )
+               }
+                {!error ? (<Button onClick={async () => {
                   try {
                     await writeAsyncCancelListing?.()
                   } catch (err) {
-                    console.log(err)
+                    // setError(err)
                   }
-                }} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Cancel</Button>
+                }} disabled={isLoadingCancelListing} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"}}}>
+                {isLoadingCancelListing?(<Loader/>):"Cancel"}
+                </Button>):(
+                  <Button onClick={handleOpenError} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"}}}>
+                {isLoadingCancelListing?(<Loader/>):"Cancel"}
+                </Button>
+                )}
               </Stack>
               <Box sx={{ textAlign: "center", marginTop: "20px" }}>
-                <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px", justifyContent: "center" }}>Close</Button>
+                <Button onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px", justifyContent: "center" ,bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"}}}>Close</Button>
               </Box>
             </Box>
+          </Box>
+        </Modal>
+
+
+        <Modal
+          open={openError}
+          onClose={handleCloseError}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+
+            <Container sx={{ marginTop: "10px" }}>
+              <Grid container spacing={2} sx={{textAlign:"center"}}>
+                <Grid item lg={12} xs={12} >
+                  <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px', textAlign: "center !important", marginTop: "5px" }}>
+                    {"Some Error Occurred"}
+                  </Typography>
+                </Grid>
+
+              </Grid>
+            </Container>
+            <Container>
+              <Stack spacing={2} direction="row" sx={{ pt: '15px' }} justifyContent={"center"}>
+                <Button onClick={handleCloseError} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600","&:hover":{bgcolor:"#32e0b4 !important",opacity:"0.8"}}}>cancel</Button>
+              </Stack>
+            </Container>
           </Box>
         </Modal>
 

@@ -148,7 +148,7 @@ const items = ({ ItemsData }) => {
             <Grid container spacing={2}>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px' }}>
-                  set Price
+                Price
                 </Typography>
                 <TextField
                   id="price"
@@ -160,7 +160,7 @@ const items = ({ ItemsData }) => {
               </Grid>
               <Grid item lg={6} xs={12}>
                 <Typography variant="body2" sx={{ color: '#fff', fontSize: '15px' }}>
-                  Payment option
+                  Payment Token
                 </Typography>
                 <Box >
                   <FormControl fullWidth sx={{ width: '100%', border: "1px solid #fff", borderRadius: "5px", input: { color: "#fff", } }}>
@@ -195,17 +195,17 @@ const items = ({ ItemsData }) => {
                 }catch(err){
                   console.log(err)
                 }
-              }} disabled={isLoadingUpdateListing} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Update</Button>
+              }} disabled={isLoadingUpdateListing} variant="contained" sx={{ fontSize: "18px", width: "150px",bgcolor: "#32e0b4",fontWeight:"600" }}>Update</Button>
               <Button onClick={async()=>{
                 try{
                   await writeAsyncCancelListing?.()
                 }catch(err){
                   console.log(err)
                 }
-              }} variant="contained" sx={{ fontSize: "18px", width: "150px" }}>Cancel</Button>
+              }} variant="contained" sx={{ fontSize: "18px", width: "150px" ,bgcolor: "#32e0b4",fontWeight:"600"}}>Cancel</Button>
             </Stack>
             <Box sx={{textAlign: "center", marginTop:"20px"}}>
-               <Button  onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px", justifyContent:"center" }}>Close</Button>
+               <Button  onClick={handleClose} variant="contained" sx={{ fontSize: "18px", width: "150px", justifyContent:"center",bgcolor: "#32e0b4",fontWeight:"600" }}>Close</Button>
           </Box>
           </Box>
         </Box>
